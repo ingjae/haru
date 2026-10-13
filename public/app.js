@@ -3,7 +3,7 @@ const $ = id => document.getElementById(id);
 const bridge = window.desktop;
 let events = [], selected, connected = false, loading = false;
 let widget={edge:false,expanded:false},toastTimer;
-function applyWidget(state){widget=state;document.body.classList.toggle('collapsed-titles',!!state.collapsedTitles);$('collapsed-titles').checked=!!state.collapsedTitles;$('rail-background').checked=state.railBackground!==false;document.body.classList.toggle('rail-background-off',state.railBackground===false);document.body.classList.toggle('widget-right',state.side==='right');document.body.classList.toggle('edge-widget',!!state.edge);document.body.classList.toggle('widget-collapsed',!!state.edge&&!state.expanded);render();}
+function applyWidget(state){widget=state;$('rail-collapse').hidden=!state.edge||!state.expanded;document.body.classList.toggle('collapsed-titles',!!state.collapsedTitles);$('collapsed-titles').checked=!!state.collapsedTitles;$('rail-background').checked=state.railBackground!==false;document.body.classList.toggle('rail-background-off',state.railBackground===false);document.body.classList.toggle('widget-right',state.side==='right');document.body.classList.toggle('edge-widget',!!state.edge);document.body.classList.toggle('widget-collapsed',!!state.edge&&!state.expanded);render();}
 const time = value => new Date(value).toLocaleTimeString('ko-KR', {hour:'2-digit',minute:'2-digit',hour12:false});
 function message(text) { $('message').textContent = text; $('settings-message').textContent=text; }
 function samples() {
@@ -78,6 +78,8 @@ $('collapsed-titles').onchange=async()=>{const enabled=$('collapsed-titles').che
 $('rail-background').onchange=async()=>{const enabled=$('rail-background').checked;try{if(bridge)await bridge.railBackground(enabled);else document.body.classList.toggle('rail-background-off',!enabled);}catch(error){$('rail-background').checked=!enabled;message(error.message);}};
 let opacityTimer;
 $('transparency').oninput=()=>{const value=Number($('transparency').value);$('transparency-value').textContent=`${value}%`;clearTimeout(opacityTimer);opacityTimer=setTimeout(()=>{if(bridge)bridge.opacity(1-value/100).catch(error=>message(error.message));else document.body.style.opacity=1-value/100;},70);};
+$('rail-collapse').onclick=()=>bridge?.expand(false);
+document.addEventListener('click',event=>{if(bridge&&widget.edge&&!widget.expanded&&!event.target.closest('button,dialog'))bridge.expand(true);});
 $('settings-open').onclick=()=>{bridge?.editing(true);$('settings').showModal();};
 $('settings-close').onclick=()=>$('settings').close();
 $('settings').addEventListener('close',()=>bridge?.editing(false));

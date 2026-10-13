@@ -5,6 +5,7 @@ contextBridge.exposeInMainWorld('desktop',{
   reserveSpace:value=>ipcRenderer.invoke('reserve-space',value),
   onWidget:callback=>ipcRenderer.on('widget-state',(_event,state)=>callback(state)),
   onReminder:callback=>ipcRenderer.on('reminder',(_event,event)=>callback(event)),
+  expand:value=>ipcRenderer.invoke('expand',value),
   editing:value=>ipcRenderer.invoke('editing',value),
   status:()=>ipcRenderer.invoke('status'),connect:()=>ipcRenderer.invoke('connect'),disconnect:()=>ipcRenderer.invoke('disconnect'),
   events:(start,end)=>ipcRenderer.invoke('events',start,end),update:(id,patch)=>ipcRenderer.invoke('update',id,patch),

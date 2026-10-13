@@ -6,6 +6,9 @@ const crypto=require('node:crypto');
 const {spawn}=require('node:child_process');
 const {desktopCredential,authError}=require('./google-auth.cjs');
 const RAIL_WIDTH=24;
+const demoMode=process.argv.includes('--demo');
+if(demoMode)app.setPath('userData',path.join(app.getPath('temp'),'haru-product-demo'));
+
 let layoutHelper=null,layoutTrusted=false;
 function sendLayout(){
   if(!layoutHelper?.stdin.writable||!win)return;
@@ -18,15 +21,15 @@ function startLayout(prompt=false){
   const binary=app.isPackaged?path.join(process.resourcesPath,'haru-layout'):path.join(__dirname,'bin/haru-layout');
   layoutHelper=spawn(binary,prompt?['--prompt']:[],{stdio:['pipe','pipe','pipe']});
   layoutHelper.stdout.setEncoding('utf8');
-  let output='';layoutHelper.stdout.on('data',data=>{output+=data;let end;while((end=output.indexOf('\n'))>=0){const line=output.slice(0,end).trim();output=output.slice(end+1);layoutTrusted=line==='trusted';win?.webContents.send('layout-status',{enabled:!!preferences.reserveSpace,trusted:layoutTrusted});}});
+  let output='';layoutHelper.stdout.on('data',data=>{output+=data;let end;while((end=output.indexOf('\n'))>=0){const line=output.slice(0,end).trim();output=output.slice(end+1);if(line.startsWith('mouse-down ')){const [x,y]=line.slice(11).split(' ').map(Number);if(Number.isFinite(x)&&Number.isFinite(y)&&win&&expanded&&!editing){const b=win.getBounds();if(x<b.x||x>=b.x+b.width||y<b.y||y>=b.y+b.height){manualExpanded=false;toastUntil=0;setExpansion(false);}}}else if(line==='trusted'||line==='permission-required'){layoutTrusted=line==='trusted';win?.webContents.send('layout-status',{enabled:!!preferences.reserveSpace,trusted:layoutTrusted});}}});
   layoutHelper.on('error',()=>{layoutHelper=null;win?.webContents.send('layout-status',{enabled:false,trusted:false,error:'창 배치 도우미를 빌드한 뒤 다시 실행해 주세요.'});});
   layoutHelper.on('exit',()=>{layoutHelper=null;layoutTrusted=false;});
   layoutHelper.stdin.on('error',()=>{});
   sendLayout();
 }
 let marker,win,tray,origin,server,token=null,mode='window',alertEnabled=false,timers=[],loginPending=false;
-let preferences={mode:'left',pinned:true,notifications:false,reserveSpace:false,opacity:1,railBackground:true,collapsedTitles:false};
-let expanded=false,toastUntil=0,hoverTimer,editing=false;
+let preferences={mode:'left',pinned:true,notifications:false,reserveSpace:false,opacity:1,railBackground:true,collapsedTitles:demoMode};
+let expanded=false,toastUntil=0,expansionTimer,editing=false,manualExpanded=false;
 function activateForInteraction(){win.setFocusable(true);win.show();win.focus();}
 function widgetState(){return {edge:['left','right'].includes(mode),expanded,side:mode,railBackground:!!preferences.railBackground,collapsedTitles:!!preferences.collapsedTitles};}
 function setExpansion(value){
@@ -51,6 +54,7 @@ async function exchange(params){
   const data=await r.json();if(!r.ok)throw Error(authError(data.error));return data;
 }
 async function connect(){
+  if(demoMode)throw Error('데모 모드입니다. 실제 Google 연결은 일반 실행에서 사용할 수 있습니다.');
   if(loginPending)throw Error('이미 Google 로그인이 진행 중입니다.');loginPending=true;
   try{
     const credentials=await credential();const state=crypto.randomBytes(32).toString('hex'),verifier=crypto.randomBytes(32).toString('base64url');
@@ -78,7 +82,7 @@ async function calendar(endpoint,options={}){
   if(!response.ok){if(response.status===401)throw Error('Google 인증이 만료되었습니다. 연결을 해제하고 다시 연결해 주세요.');if(response.status===403)throw Error('캘린더 접근이 거부되었습니다. Calendar API 활성화와 계정 권한을 확인해 주세요.');throw Error(`캘린더 요청 실패 (${response.status}). 잠시 후 다시 시도해 주세요.`);}return response.json();
 }
 function position(next){
-  if(!['window','left','right','top','menubar'].includes(next))return;marker?.hide();mode=next;preferences.mode=next;savePreferences().catch(()=>{});
+  if(!['window','left','right','top','menubar'].includes(next))return;marker?.hide();manualExpanded=false;mode=next;preferences.mode=next;savePreferences().catch(()=>{});
   const area=screen.getDisplayMatching(win.getBounds()).workArea;
   expanded=false;const width=Math.min(['left','right'].includes(next)?RAIL_WIDTH:420,area.width),height=Math.min(660,area.height);
   const bounds=next==='left'?{x:area.x,y:area.y,width,height:area.height}:next==='right'?{x:area.x+area.width-width,y:area.y,width,height:area.height}:next==='top'?{x:area.x,y:area.y,width:area.width,height:Math.min(360,area.height)}:next==='menubar'?{x:area.x+area.width-width,y:area.y,width,height}:{x:area.x+Math.round((area.width-Math.min(1100,area.width))/2),y:area.y+40,width:Math.min(1100,area.width),height:Math.min(800,area.height-40)};
@@ -86,7 +90,7 @@ function position(next){
   win.webContents.send('widget-state',widgetState());sendLayout();
 }
 function popover(){
-  if(mode!=='menubar'){win.showInactive();return;}
+  if(mode!=='menubar'){manualExpanded=true;setExpansion(true);win.showInactive();return;}
   const area=screen.getDisplayNearestPoint(screen.getCursorScreenPoint()).workArea,b=tray.getBounds();
   win.setBounds({x:Math.max(area.x,Math.min(b.x-190,area.x+area.width-420)),y:area.y,width:Math.min(420,area.width),height:Math.min(660,area.height)});win.showInactive();
 }
@@ -103,7 +107,7 @@ if(!app.requestSingleInstanceLock()){app.quit();}else app.whenReady().then(async
   try{preferences={...preferences,...JSON.parse(await fs.readFile(preferencesPath(),'utf8'))};}catch{}
   if(process.argv.includes('--reserve-space')){preferences.reserveSpace=true;await savePreferences();}
   alertEnabled=!!preferences.notifications;
-  try{if(safeStorage.isEncryptionAvailable())token=JSON.parse(safeStorage.decryptString(await fs.readFile(tokenPath())));}catch{}
+  try{if(!demoMode&&safeStorage.isEncryptionAvailable())token=JSON.parse(safeStorage.decryptString(await fs.readFile(tokenPath())));}catch{}
   server=http.createServer(async(req,res)=>{const files={'/':'index.html','/app.js':'app.js','/calendar.js':'calendar.js','/style.css':'style.css'};const file=files[req.url];if(!file){res.writeHead(404);res.end();return;}try{const body=await fs.readFile(path.join(__dirname,'../public',file));res.setHeader('Content-Type',file.endsWith('.js')?'text/javascript':file.endsWith('.css')?'text/css':'text/html; charset=utf-8');res.setHeader('Content-Security-Policy',"default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'none'");res.end(body);}catch{res.writeHead(500);res.end();}});
   await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));origin=`http://127.0.0.1:${server.address().port}`;
   win=new BrowserWindow({width:RAIL_WIDTH,height:800,minWidth:RAIL_WIDTH,minHeight:280,show:false,focusable:false,acceptFirstMouse:true,type:process.platform==='darwin'?'panel':undefined,frame:false,hasShadow:false,roundedCorners:false,skipTaskbar:true,title:'Haru · 오늘의 타임라인',transparent:true,backgroundColor:'#00000000',alwaysOnTop:true,webPreferences:{preload:path.join(__dirname,'preload.cjs'),contextIsolation:true,nodeIntegration:false,sandbox:true}});
@@ -128,16 +132,18 @@ if(!app.requestSingleInstanceLock()){app.quit();}else app.whenReady().then(async
   handle('rail-background',async value=>{if(typeof value!=='boolean')throw Error('배경 설정을 확인해 주세요.');preferences.railBackground=value;await savePreferences();win.webContents.send('widget-state',widgetState());return value;});
   handle('opacity',async value=>{if(typeof value!=='number'||!Number.isFinite(value)||value<0.35||value>1)throw Error('투명도 범위를 확인해 주세요.');win.setOpacity(value);marker.setOpacity(value);preferences.opacity=value;await savePreferences();return value;});
   handle('position',position);handle('pin',value=>{win.setAlwaysOnTop(!!value);marker.setAlwaysOnTop(!!value);preferences.pinned=!!value;return savePreferences();});handle('open-meeting',external);handle('schedule',schedule);
+  handle('expand',value=>{manualExpanded=!!value;setExpansion(manualExpanded||editing);});
   handle('editing',value=>{editing=!!value;if(editing){setExpansion(true);activateForInteraction();}else{win.blur();win.setFocusable(false);}});
   handle('notifications',async()=>{if(!Notification.isSupported())throw Error('이 환경은 시스템 알림을 지원하지 않습니다.');alertEnabled=true;preferences.notifications=true;await savePreferences();new Notification({title:'Haru 알림',body:'일정 알림을 켰습니다. 앱을 실행한 상태로 유지해 주세요.'}).show();});
   await win.loadURL(origin);
   preferences.opacity=typeof preferences.opacity==='number'&&Number.isFinite(preferences.opacity)?Math.max(.35,Math.min(1,preferences.opacity)):1;
   marker.setOpacity(preferences.opacity);marker.setAlwaysOnTop(!!preferences.pinned);win.setOpacity(preferences.opacity);win.setAlwaysOnTop(!!preferences.pinned);position(preferences.mode);
-  if(preferences.reserveSpace)startLayout(process.argv.includes('--reserve-space'));
+  startLayout(process.argv.includes('--reserve-space'));
   if(process.argv.includes('--google-setup'))win.webContents.send('google-setup');
   screen.on('display-metrics-changed',()=>{position(mode);sendLayout();});
-  hoverTimer=setInterval(()=>{if(!['left','right'].includes(mode))return;const p=screen.getCursorScreenPoint(),b=win.getBounds();const inside=p.x>=b.x&&p.x<b.x+b.width&&p.y>=b.y&&p.y<b.y+b.height;setExpansion(inside||editing||Date.now()<toastUntil);},200);
+  // Only explicit clicks, editors and timed reminders may expand the rail.
+  expansionTimer=setInterval(()=>setExpansion(manualExpanded||editing||Date.now()<toastUntil),200);
 });
-app.on('before-quit',()=>{app.quitting=true;layoutHelper?.kill();timers.forEach(clearTimeout);clearInterval(hoverTimer);server?.close();});
+app.on('before-quit',()=>{app.quitting=true;layoutHelper?.kill();timers.forEach(clearTimeout);clearInterval(expansionTimer);server?.close();});
 app.on('window-all-closed',()=>{});app.on('activate',()=>{if(win)activateForInteraction();});
 app.on('second-instance',()=>win?.showInactive());

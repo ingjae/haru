@@ -1,0 +1,31 @@
+name: Bug report
+description: Report a reproducible problem
+title: '[Bug] '
+labels: []
+body:
+ - type: markdown
+   attributes:
+     value: '인증 JSON·토큰·개인 일정·회의 URL은 첨부하지 마세요. 샘플 모드로 재현해 주세요.'
+ - type: input
+   id: environment
+   attributes:
+     label: 환경
+     description: macOS 버전, Apple Silicon/Intel, Haru 버전 또는 커밋
+   validations:
+     required: true
+ - type: textarea
+   id: steps
+   attributes:
+     label: 재현 순서
+   validations:
+     required: true
+ - type: textarea
+   id: expected
+   attributes:
+     label: 기대한 동작과 실제 동작
+   validations:
+     required: true
+ - type: textarea
+   id: evidence
+   attributes:
+     label: 샘플 화면 또는 비밀정보를 제거한 로그

@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Google 연결 안내
+    url: https://github.com/ingjae/haru/blob/main/docs/GOOGLE_SETUP.md
+    about: OAuth와 Calendar API 설정을 먼저 확인하세요.
+  - name: 보안 제보 안내
+    url: https://github.com/ingjae/haru/blob/main/SECURITY.md
+    about: 비밀정보를 공개 이슈에 첨부하지 마세요.

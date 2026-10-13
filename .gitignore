@@ -4,3 +4,7 @@ dist/
 *credentials*.json
 *.log
 desktop/bin/
+*client_secret*.json
+*oauth*.json
+*token*.json
+__pycache__/

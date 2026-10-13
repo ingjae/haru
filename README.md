@@ -1,48 +1,127 @@
-# Haru · 하루
+<p align="center"><img src="docs/assets/logo.png" width="88" alt="Haru logo"></p>
+<h1 align="center">Haru · 하루</h1>
+<p align="center"><strong>하루의 흐름은 보이게. 작업은 방해하지 않게.</strong><br>macOS 화면 가장자리에 머무는 Google Calendar 타임라인.</p>
+<p align="center">
+  <a href="https://github.com/ingjae/haru/releases"><img src="https://img.shields.io/github/v/release/ingjae/haru?color=345c44" alt="Release"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-345c44" alt="MIT license"></a>
+  <img src="https://img.shields.io/badge/platform-macOS-253b2f" alt="macOS">
+  <a href="https://github.com/ingjae/haru/actions/workflows/ci.yml"><img src="https://github.com/ingjae/haru/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+</p>
+<p align="center"><a href="https://github.com/ingjae/haru/releases/latest">다운로드</a> · <a href="#사용-예시">사용 예시</a> · <a href="docs/GOOGLE_SETUP.md">Google 연결</a> · <a href="CONTRIBUTING.md">기여하기</a></p>
 
-맥북용 Google 캘린더 타임라인 앱입니다. Electron 독립 창, 화면 왼쪽/오른쪽/위쪽 배치, 항상 위 표시, 메뉴바 조작를 제공합니다. 실제 계정 없이 샘플 일정으로 먼저 실행할 수 있습니다.
+![Haru 제품 소개 — 실제 Mac 앱의 샘플 일정 화면](docs/assets/hero.png)
 
-## macOS 실행
+Haru는 앱을 열지 않아도 오늘의 일정 분포와 남은 시간을 볼 수 있는 작은 캘린더 레일입니다. 기본 24px 폭에 오전 9시부터 오후 9시까지 표시하고, 필요할 때 클릭해 일정을 확인합니다. 화면 공간을 조금만 쓰면서 현재 시간이 어디쯤인지 계속 보여 줍니다.
 
-Node.js 20 이상과 npm을 설치하고 저장소에서 실행하세요.
+> **개발 초기 버전입니다.** 아래 이미지·영상은 최신 `main` 소스를 Mac에서 실행한 **샘플 일정** 화면입니다. 게시된 `v0.0.1` DMG는 이전 hover 확장 방식이며, 클릭 확장·바깥 클릭 접기는 최신 소스에만 포함돼 있습니다.
+
+## 이렇게 사용합니다
+
+| 원하는 일 | Haru에서 하는 일 |
+| --- | --- |
+| 오늘 회의 분포를 빠르게 보기 | 색상 블록과 빨간 현재 시간 표시 확인 |
+| 일정 내용을 확인하기 | 레일 클릭 → 일정 블록 클릭 |
+| 회의 링크 열기 | 일정 상세의 **화상회의 참가** 선택 |
+| 시간·제목·알림 바꾸기 | 상세에서 수정 후 **변경 저장** |
+| 다시 작업에 집중하기 | 다른 곳 클릭 또는 **레일 접기** |
+| 취향에 맞게 보이기 | **⚙ 설정 → 표시**에서 배경·세로 제목·투명도 조절 |
+
+마우스를 올리는 것만으로 확장되지 않습니다. 다른 앱을 클릭하면 접히며, 편집·설정 중에는 펼친 상태를 유지합니다. 자동 표시와 위치 변경은 포커스를 가져오지 않도록 구성했습니다.
+
+## 사용 예시
+
+![레일 클릭과 복귀 사용 예시](docs/assets/walkthrough.gif)
+
+실제 Mac 앱 화면을 단계별로 캡처하여 만든 무음 안내 영상입니다. 실시간 연속 녹화가 아니며, Google 계정 정보와 실제 일정은 포함하지 않았습니다.
+
+| 영상 | 보여 주는 흐름 |
+| --- | --- |
+| [레일 펼치기·접기 — MP4](docs/assets/videos/01-ribbon.mp4) | 항상 보이는 레일 → 클릭 확장 → 레일 복귀 |
+| [일정 확인·수정 — MP4](docs/assets/videos/02-event-edit.mp4) | 샘플 일정 열기 → 제목 수정 → 저장 결과 |
+| [화면 꾸미기 — MP4](docs/assets/videos/03-appearance.mp4) | 설정 열기 → 배경·투명도 변경 → 축소 화면 |
+
+## 스크린샷
+
+<p>
+  <img src="docs/assets/screenshots/timeline.png" width="250" alt="확장된 오늘의 타임라인">
+  <img src="docs/assets/screenshots/event-details-card.png" width="300" alt="일정 상세 창">
+  <img src="docs/assets/screenshots/settings-card.png" width="300" alt="표시와 계정 설정">
+</p>
+
+좁은 레일에서는 제목을 세로로 표시할 수 있습니다. 배경을 끄면 색상 블록만 남고, 현재 시간 삼각형은 레일 바깥에서 선을 가리킵니다. 삼각형은 다른 앱 위에 겹쳐도 별도의 예약 공간을 늘리지 않으며 클릭을 아래 앱으로 통과시킵니다.
+
+## 설치
+
+### Mac 앱 다운로드
+
+[최신 릴리스](https://github.com/ingjae/haru/releases/latest)에서 Apple Silicon용 DMG를 내려받아 Haru를 Applications로 옮기세요. `SHA256SUMS.txt`에서 다운로드 무결성을 확인할 수 있습니다.
+
+- 현재 배포 파일은 **Apple Silicon arm64 전용**입니다.
+- `v0.0.1`은 **서명·공증하지 않은 개발 패키지**입니다. macOS가 실행을 제한할 수 있습니다.
+- Intel Mac 배포, 자동 업데이트, 로그인 시 자동 실행은 아직 제공하지 않습니다.
+- Google 연결을 위한 OAuth JSON은 앱에 포함돼 있지 않습니다.
+
+### 최신 소스 실행
+
+Node.js 20 이상과 macOS Xcode Command Line Tools가 필요합니다.
 
 ```sh
+git clone https://github.com/ingjae/haru.git
+cd haru
 npm ci
 npm start
 ```
 
-기본은 화면 왼쪽의 24px 폭으로 항상 보이는 프레임 없는 위젯입니다. 오전 9시부터 오후 9시까지 배경 없는 일정 색상 띠와 현재 시간 선을 표시합니다. 시간 숫자는 hover 패널에서 표시합니다. 겹치는 일정은 나란히 표시합니다. 마우스를 올리면 420px로 확장되어 제목과 조작 버튼을 보여 주고, 벗어나면 다시 줄어듭니다. 9–21시 범위 밖의 일정과 종일 일정은 확장했을 때 별도 버튼으로 접근합니다.
-
-설정(⚙)의 화면 배치 버튼 또는 메뉴바 아이콘의 우클릭 메뉴로 왼쪽/오른쪽/위쪽/메뉴바 아래 위치를 선택합니다. 메뉴바 아래 모드도 클릭 없이 계속 보입니다. 위젯은 닫기 동작으로 숨겨지지 않으며, 종료하려면 메뉴바의 `종료`를 선택합니다. 위쪽 제목 영역을 드래그해 직접 이동할 수도 있습니다. 표시 위치·항상 위·알림 설정은 재시작 후 유지됩니다. macOS의 모든 Space와 전체 화면에도 표시하도록 설정했으며 실제 전체 화면 동작은 macOS에서 확인해야 합니다.
-
-## Google 캘린더 연결
-
-1. Google Cloud 프로젝트에서 Google Calendar API를 활성화합니다.
-2. OAuth 동의 화면을 설정합니다. 테스트 모드이면 로그인할 계정을 테스트 사용자로 추가합니다.
-3. OAuth 클라이언트 유형을 **데스크톱 앱**으로 만들고 JSON을 다운로드합니다.
-4. 앱의 `Google 캘린더 연결`을 누르고 JSON을 선택합니다. 또는 `GOOGLE_OAUTH_CREDENTIALS`에 JSON 파일의 절대 경로를 지정합니다.
-5. 시스템 브라우저에서 로그인합니다. 임시 localhost 콜백과 PKCE로 인증합니다.
-
-인증 JSON과 토큰은 Git에 올리지 마세요. 토큰은 Electron safeStorage로 암호화하여 앱 사용자 데이터 폴더에 보관합니다. `연결 해제`는 이 기기의 인증 정보를 삭제합니다. Google 계정의 앱 접근 권한 자체를 취소하려면 Google 계정 보안 설정에서 삭제하세요.
-
-현재 기본 캘린더의 오늘 일정을 표시합니다. 기기의 현지 시간대를 사용합니다. 종일 일정은 별도 표시하며 수정은 아직 지원하지 않습니다. 시간 일정은 제목·시작·종료·알림을 수정할 수 있습니다. 회의 URL이 있는 일정은 시스템 브라우저에서 참가 링크를 엽니다. 반복 일정 수정은 선택한 회차에 적용됩니다.
-
-`알림 켜기`를 누르고 macOS 알림 권한을 허용하세요. 앱에서 설정하거나 일정에 명시된 popup 알림에 대해 앱 실행 중 시스템 알림과 위젯 말풍선을 표시합니다. 말풍선은 위젯을 자동 확장하여 일정 내용을 8초간 보여 주고 사라집니다. 클릭하면 해당 일정을 열 수 있습니다. 캘린더 기본 알림을 사용하는 일정, 앱 종료 중 알림, 잠자기 중 알림은 현재 지원하지 않습니다. Google 캘린더에 저장한 알림은 Google 측에서도 별도로 처리됩니다.
-
-## 개발·검증
+`npm start`는 Swift 창 배치 도우미를 먼저 빌드합니다. 실제 계정을 연결하기 전에는 샘플 일정이 표시됩니다.
 
 ```sh
-npm test
-npm run web # 샘플 UI를 브라우저에서 확인; Google 연결은 데스크톱에서 지원
-npm run package:mac # macOS에서 DMG 생성
+npm run demo     # 별도 임시 설정 폴더, Google 인증을 읽지 않는 샘플 모드
+npm test         # 날짜·회의 링크·수정 payload·OAuth 입력 검증
+npm run web      # 브라우저 샘플 UI; 데스크톱 기능은 제외
+npm run package:mac # Mac DMG 생성
 ```
 
-배포용 서명/공증과 Apple 개발자 계정 설정은 별도입니다. macOS 빌드 및 시스템 UI 동작은 macOS에서 검증해야 합니다.
+데모 모드는 실제 Google 연결을 허용하지 않으며, 샘플 일정 변경은 재시작 시 초기화됩니다.
 
-## 화면 공간 확보 (macOS)
+## Google Calendar 연결
 
-설정(⚙)의 `화면 공간 확보`를 켜면 네이티브 `haru-layout` 도우미가 손쉬운 사용 권한을 요청합니다. 권한이 허용되면 활성 앱의 일반 창이 왼쪽/오른쪽 레일과 겹칠 때 위치·폭을 조정합니다. 항상 예약하는 폭은 24px이며 hover 확장 420px는 다른 창을 밀지 않습니다. 전체 화면, 최소화된 창, Finder와 다른 모니터의 창은 제외합니다. 끄면 이후 자동 조정을 멈추며 기존 창 크기를 복원하지는 않습니다.
+**⚙ 설정 → Google 캘린더 → Google 캘린더 연결**에서 데스크톱 OAuth JSON을 선택하고 시스템 브라우저로 로그인합니다. Chrome에 로그인되어 있는 것만으로 연결되지는 않습니다.
 
-이는 macOS Dock처럼 시스템 작업 영역 자체를 등록하는 기능이 아닙니다. 창 정렬 후 약 0.6초 안에 보정하며, 최소 크기를 강제하거나 접근성 제어를 거부하는 앱은 겹칠 수 있습니다. 타일링·전체 화면 조합에서 추가 검증이 필요합니다.
+1. Google Cloud 프로젝트에서 **Google Calendar API** 사용 설정.
+2. OAuth 동의 화면 설정. 테스트 모드라면 본인 계정을 **테스트 사용자**에 추가.
+3. **데스크톱 앱** 유형의 OAuth 클라이언트 생성 후 JSON 다운로드.
+4. 앱에서 JSON 선택 → 브라우저 로그인 → 앱에서 조회 결과 확인.
 
-`npm start`는 Swift 도우미를 먼저 빌드합니다. Xcode Command Line Tools가 필요합니다. Google 연결 메뉴는 메뉴바 아이콘 우클릭에서도 열 수 있습니다.
+[자세한 설정·오류 해결](docs/GOOGLE_SETUP.md)
+
+기본 캘린더의 오늘 일정만 읽습니다. 시간 일정의 수정은 선택한 회차에 적용되고, 종일 일정 수정은 지원하지 않습니다. 회의 링크는 Google 회의 필드 및 설명·장소의 Meet, Zoom, Teams 주소를 인식합니다.
+
+## 표시와 창 배치
+
+설정에서 왼쪽·오른쪽·위쪽·메뉴바 아래·일반 창을 선택할 수 있습니다. 왼쪽/오른쪽은 24px 레일이며, 위쪽은 현재 넓은 패널 형태입니다.
+
+**화면 공간 확보**는 손쉬운 사용 권한으로 활성 앱의 일반 창이 레일을 침범하면 위치·폭을 조정합니다. macOS 작업 영역 자체를 예약하는 방식은 아닙니다. 전체 화면·최소화·Finder·다른 모니터의 창은 제외하며, 앱의 최소 크기나 타일링 방식에 따라 겹칠 수 있습니다. 확장 패널은 다른 창을 밀지 않습니다.
+
+알림은 앱 실행 중 명시적 popup 알림에 대해 시스템 알림과 잠깐의 말풍선을 제공합니다. 캘린더 기본 알림, 앱 종료·잠자기 중 전달은 지원하지 않습니다.
+
+## 개인정보와 검증 상태
+
+OAuth와 Calendar API는 이 Mac에서 Google과 직접 통신합니다. Haru 서버를 경유하지 않습니다. 토큰·OAuth 클라이언트 정보는 Electron `safeStorage`로 암호화해 앱 데이터 폴더에 저장하며 렌더러에 전달하지 않습니다. 인증 JSON과 토큰은 커밋하거나 이슈에 첨부하지 마세요.
+
+| 확인한 것 | 추가 확인이 필요한 것 |
+| --- | --- |
+| Mac 앱·arm64 패키지 실제 실행 | 서명·공증, Intel Mac 패키지 |
+| 실제 Google 로그인과 일정 조회 | 실제 일정 수정·회의 참가·시스템 알림의 전체 흐름 |
+| 클릭 확장·바깥 클릭 접기 | 모든 스냅·전체 화면·여러 모니터 조합 |
+| 표시 설정 저장, 샘플 수정 | 창 배치 보정의 앱별 호환성 |
+| 자동 테스트 9개, DMG 무결성 | 장시간 실행·잠자기 이후 복구 |
+
+[보안 제보](SECURITY.md) · [변경 이력](CHANGELOG.md) · [개발 인계](docs/HANDOFF.md)
+
+## 함께 만들기
+
+버그·사용성 피드백은 [이슈](https://github.com/ingjae/haru/issues)로 남겨 주세요. PR 전에는 [기여 안내](CONTRIBUTING.md)와 [행동 규칙](CODE_OF_CONDUCT.md)을 확인해 주세요.
+
+Haru의 핵심은 **항상 보이는 작은 레일**입니다. 더 읽기 쉬운 표현, Mac 창 동작, Google 연결 복구와 알림 검증에 기여를 환영합니다.
+
+[MIT License](LICENSE) · Copyright © 2026 ingjae

@@ -1,0 +1,35 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    env:
+      ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - name: JavaScript syntax
+        run: |
+          node --check desktop/main.cjs
+          node --check desktop/preload.cjs
+          node --check desktop/google-auth.cjs
+          node --check public/app.js
+          node --check public/calendar.js
+      - name: Native helper build
+        if: runner.os == 'macOS'
+        run: npm run build:native

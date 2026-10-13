@@ -31,6 +31,13 @@ let prompt = CommandLine.arguments.contains("--prompt")
 var trusted = AXIsProcessTrustedWithOptions([kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: prompt] as CFDictionary)
 func report(_ value: Bool) { print(value ? "trusted" : "permission-required"); fflush(stdout) }
 report(trusted)
+let nativeApplication = NSApplication.shared
+nativeApplication.setActivationPolicy(.prohibited)
+// Mouse-only monitor: no key input or content is observed.
+let clickMonitor = NSEvent.addGlobalMonitorForEvents(matching: [.leftMouseDown, .rightMouseDown, .otherMouseDown]) { event in
+    guard let point = event.cgEvent?.location else { return }
+    print("mouse-down \(point.x) \(point.y)"); fflush(stdout)
+}
 Timer.scheduledTimer(withTimeInterval: 0.6, repeats: true) { _ in
     let current = AXIsProcessTrusted()
     if current != trusted { trusted = current; report(current) }

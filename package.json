@@ -13,7 +13,9 @@
     "build:native": "node desktop/native/build.cjs",
     "prestart": "npm run build:native",
     "predev": "npm run build:native",
-    "prepackage:mac": "npm run build:native"
+    "prepackage:mac": "npm run build:native",
+    "demo": "electron . --demo",
+    "predemo": "npm run build:native"
   },
   "devDependencies": {
     "electron": "^39.0.0",
@@ -31,7 +33,8 @@
       "target": [
         "dmg"
       ],
-      "category": "public.app-category.productivity"
+      "category": "public.app-category.productivity",
+      "icon": "desktop/assets/haru.icns"
     },
     "extraResources": [
       {
@@ -42,5 +45,23 @@
   },
   "engines": {
     "node": ">=20"
-  }
+  },
+  "description": "A quiet macOS calendar ribbon that keeps your day in view.",
+  "author": "ingjae",
+  "license": "MIT",
+  "homepage": "https://github.com/ingjae/haru",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ingjae/haru.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ingjae/haru/issues"
+  },
+  "keywords": [
+    "macos",
+    "calendar",
+    "google-calendar",
+    "electron",
+    "widget"
+  ]
 }
