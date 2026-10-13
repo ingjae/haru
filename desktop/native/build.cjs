@@ -1,0 +1,10 @@
+const {mkdirSync,existsSync,statSync}=require('node:fs');
+const {spawnSync}=require('node:child_process');
+const path=require('node:path');
+const os=require('node:os');
+if(process.platform!=='darwin')process.exit(0);
+const directory=path.join(__dirname,'../bin');mkdirSync(directory,{recursive:true});
+const binary=path.join(directory,'haru-layout'),source=path.join(__dirname,'window-layout.swift');
+if(existsSync(binary)&&statSync(binary).mtimeMs>=statSync(source).mtimeMs)process.exit(0);
+const result=spawnSync('xcrun',['swiftc','-module-cache-path',path.join(os.tmpdir(),'haru-swift-cache'),'-O',path.join(__dirname,'window-layout.swift'),'-o',path.join(directory,'haru-layout')],{stdio:'inherit'});
+process.exit(result.status??1);

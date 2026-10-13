@@ -1,0 +1,46 @@
+{
+  "name": "today-scheduler",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "main": "desktop/main.cjs",
+  "scripts": {
+    "dev": "electron .",
+    "web": "node server.js",
+    "start": "electron .",
+    "test": "node --test",
+    "package:mac": "electron-builder --mac",
+    "build:native": "node desktop/native/build.cjs",
+    "prestart": "npm run build:native",
+    "predev": "npm run build:native",
+    "prepackage:mac": "npm run build:native"
+  },
+  "devDependencies": {
+    "electron": "^39.0.0",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "appId": "com.ingjae.haru",
+    "productName": "Haru",
+    "files": [
+      "desktop/**",
+      "public/**",
+      "package.json"
+    ],
+    "mac": {
+      "target": [
+        "dmg"
+      ],
+      "category": "public.app-category.productivity"
+    },
+    "extraResources": [
+      {
+        "from": "desktop/bin/haru-layout",
+        "to": "haru-layout"
+      }
+    ]
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
