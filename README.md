@@ -48,6 +48,7 @@ Haru는 **24px 레일**로 오늘의 일정 분포와 현재 시간을 계속 �
 
 | 버전 | 현재 MacBook · 실기기 | Ubuntu 24.04 · 실기기 | 자동 검증 |
 | --- | --- | --- | --- |
+| [v0.0.4 준비](docs/releases/v0.0.4.md) | ✅ **PASS** · 현재 MacBook arm64 패키지 실행·설정 버전 표시 | ⬜ **NOT TESTED** | ✅ [Mac/Linux CI](https://github.com/ingjae/haru/actions/runs/38558357427), [Ubuntu AppImage·Xvfb 실행](https://github.com/ingjae/haru/actions/runs/38558357336) |
 | [v0.0.3](https://github.com/ingjae/haru/releases/tag/v0.0.3) | ✅ **PASS** · arm64 패키지 실행·화면·버전 표시 | ⬜ **NOT TESTED** | ✅ [Mac/Linux CI](https://github.com/ingjae/haru/actions/runs/38512005402), [Ubuntu AppImage 빌드·Xvfb 샘플 실행](https://github.com/ingjae/haru/actions/runs/38513958682) |
 | [v0.0.2](https://github.com/ingjae/haru/releases/tag/v0.0.2) | ✅ **PASS** · arm64 패키지 실행 | — Linux 배포 없음 | ✅ [CI](https://github.com/ingjae/haru/actions/runs/38379026435) |
 | [v0.0.1](https://github.com/ingjae/haru/releases/tag/v0.0.1) | ✅ **PASS** · arm64 패키지 실행 | — Linux 배포 없음 | 로컬 테스트·DMG 무결성 확인 |
