@@ -36,6 +36,7 @@ function startLayout(prompt=false){
 }
 let trayDefault,marker,win,tray,origin,server,token=null,mode='window',loginPending=false,bubbleWindow,bubbleTimer,activeReminder,scheduledEvents=[];
 let preferences={mode:'left',pinned:true,notifications:false,reminderBubble:true,reminderAnimation:'pop',reserveSpace:false,opacity:1,railBackground:true,showEvents:true,showTasks:true,collapsedTitles:demoMode,timelineStart:540,timelineEnd:1260,menuBarWidth:180};
+let calendarView='day';
 let expanded=false,expansionTimer,editing=false,manualExpanded=false,lastOpenAt=0,menuBarAnchor=null;
 function secureStorage(){return safeStorage.isEncryptionAvailable()&&(process.platform!=='linux'||safeStorage.getSelectedStorageBackend()!=='basic_text');}
 function activateForInteraction(){win.setFocusable(true);win.show();win.focus();}
@@ -46,11 +47,11 @@ function resolvedMenuBarWidth(){
   const effective=stable?b:menuBarAnchor?.displayId===d.id?{x:menuBarAnchor.right-1,width:1}:null;
   return menuBarWidth(preferences.menuBarWidth,d,effective);
 }
-function widgetState(){return {edge:['left','right'].includes(mode),expanded,side:mode,notifications:!!preferences.notifications,reminderBubble:preferences.reminderBubble!==false,reminderAnimation:preferences.reminderAnimation,platform:process.platform,showEvents:preferences.showEvents!==false,showTasks:preferences.showTasks!==false,railBackground:!!preferences.railBackground,collapsedTitles:!!preferences.collapsedTitles,timelineStart:preferences.timelineStart,timelineEnd:preferences.timelineEnd,menuBar:mode==='statusbar',menuBarWidth:preferences.menuBarWidth,menuBarWidthPixels:resolvedMenuBarWidth()};}
+function widgetState(){return {calendarView,edge:['left','right'].includes(mode),expanded,side:mode,notifications:!!preferences.notifications,reminderBubble:preferences.reminderBubble!==false,reminderAnimation:preferences.reminderAnimation,platform:process.platform,showEvents:preferences.showEvents!==false,showTasks:preferences.showTasks!==false,railBackground:!!preferences.railBackground,collapsedTitles:!!preferences.collapsedTitles,timelineStart:preferences.timelineStart,timelineEnd:preferences.timelineEnd,menuBar:mode==='statusbar',menuBarWidth:preferences.menuBarWidth,menuBarWidthPixels:resolvedMenuBarWidth()};}
 function windowMaterial(){if(process.platform==='darwin')win.setVibrancy(['left','right'].includes(mode)&&!expanded?null:'popover');}
-function setExpansion(value){
-  if(!['left','right'].includes(mode)||expanded===value)return;expanded=value;marker?.hide();windowMaterial();
-  const area=screen.getDisplayMatching(win.getBounds()).workArea,width=Math.min(value?420:RAIL_WIDTH,area.width);
+function setExpansion(value,force=false){
+  if(!['left','right'].includes(mode)||(expanded===value&&!force))return;expanded=value;if(!value)calendarView='day';marker?.hide();windowMaterial();
+  const area=screen.getDisplayMatching(win.getBounds()).workArea,width=Math.min(value?(calendarView==='day'?420:1180):RAIL_WIDTH,area.width);
   win.setBounds({x:mode==='left'?area.x:area.x+area.width-width,y:area.y,width,height:area.height});
   win.webContents.send('widget-state',widgetState());
   if(process.platform==='linux'&&value&&manualExpanded)activateForInteraction();
@@ -100,7 +101,7 @@ const google=createGoogleService(access),taskScheduling=createTaskScheduling(goo
 function position(next){
   if(!positionModes.includes(next))return;marker?.hide();manualExpanded=false;mode=next;preferences.mode=next;savePreferences().catch(()=>{});
   const area=screen.getDisplayMatching(win.getBounds()).workArea;
-  expanded=false;const width=Math.min(['left','right'].includes(next)?RAIL_WIDTH:420,area.width),height=Math.min(660,area.height);
+  expanded=false;calendarView='day';const width=Math.min(['left','right'].includes(next)?RAIL_WIDTH:420,area.width),height=Math.min(660,area.height);
   const bounds=next==='left'?{x:area.x,y:area.y,width,height:area.height}:next==='right'?{x:area.x+area.width-width,y:area.y,width,height:area.height}:next==='top'?{x:area.x,y:area.y,width:area.width,height:Math.min(360,area.height)}:['menubar','statusbar'].includes(next)?{x:area.x+area.width-width,y:area.y,width,height}:{x:area.x+Math.round((area.width-Math.min(1100,area.width))/2),y:area.y+40,width:Math.min(1100,area.width),height:Math.min(800,area.height-40)};
   windowMaterial();win.setBounds(bounds);if(next==='statusbar')win.hide();else win.showInactive();
   if(tray){tray.setImage(trayDefault);tray.setTitle(next==='statusbar'?'Haru':'');tray.setToolTip('Haru · 오늘의 일정');}
@@ -178,6 +179,7 @@ if(!app.requestSingleInstanceLock()){app.quit();}else app.whenReady().then(async
   handle('rail-background',async value=>{if(typeof value!=='boolean')throw Error('배경 설정을 확인해 주세요.');preferences.railBackground=value;await savePreferences();win.webContents.send('widget-state',widgetState());return value;});
   handle('opacity',async value=>{if(typeof value!=='number'||!Number.isFinite(value)||value<0.35||value>1)throw Error('투명도 범위를 확인해 주세요.');win.setOpacity(value);marker.setOpacity(value);preferences.opacity=value;await savePreferences();return value;});
   handle('position',position);handle('pin',value=>{win.setAlwaysOnTop(!!value);marker.setAlwaysOnTop(!!value);preferences.pinned=!!value;return savePreferences();});handle('open-calendar',()=>external('https://calendar.google.com/calendar/u/0/r'));handle('open-meeting',external);handle('schedule',schedule);
+  handle('calendar-view',value=>{if(!['day','week','month'].includes(value))throw Error('Invalid calendar view');calendarView=value;manualExpanded=true;lastOpenAt=Date.now();if(['left','right'].includes(mode))setExpansion(true,true);else {const area=screen.getDisplayMatching(win.getBounds()).workArea,width=Math.min(value==='day'?420:1180,area.width),height=Math.min(value==='day'?660:850,area.height);const b=win.getBounds();win.setBounds({x:Math.max(area.x,Math.min(b.x,area.x+area.width-width)),y:Math.max(area.y,Math.min(b.y,area.y+area.height-height)),width,height});win.webContents.send('widget-state',widgetState());}return widgetState();});
   handle('expand',value=>{if(value)lastOpenAt=Date.now();if(mode==='statusbar'&&!value){win.hide();return;}manualExpanded=!!value;setExpansion(manualExpanded||editing);});
   handle('editing',value=>{editing=!!value;if(editing){setExpansion(true);activateForInteraction();}else{win.blur();win.setFocusable(false);}});
   handle('notifications',async value=>{if(typeof value!=='boolean')throw Error('알림 설정을 확인해 주세요.');const previous=preferences.notifications;preferences.notifications=value;try{await savePreferences();}catch(error){preferences.notifications=previous;throw error;}schedule(scheduledEvents);if(!value){clearTimeout(bubbleTimer);bubbleWindow.hide();}win.webContents.send('widget-state',widgetState());return value;});

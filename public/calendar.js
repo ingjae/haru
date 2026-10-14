@@ -71,3 +71,15 @@ export function eventBlockMetrics(durationMs,pixelsPerHour,collapsed=false){
   const height=Math.max(collapsed?5:22,durationMs/3600000*pixelsPerHour-2);
   return {height,compact:!collapsed&&height<46,showTime:!collapsed&&height>=46};
 }
+
+export function calendarRange(date,view='day'){
+  if(view==='day')return dayRange(date);
+  const start=dayRange(date).start;
+  if(view==='month')start.setDate(1);
+  start.setDate(start.getDate()-(start.getDay()+6)%7);
+  const end=new Date(start);end.setDate(end.getDate()+(view==='month'?42:7));
+  return {start,end};
+}
+export function calendarDays(date,view){const {start,end}=calendarRange(date,view),days=[];for(const d=new Date(start);d<end;d.setDate(d.getDate()+1))days.push(new Date(d));return days;}
+export function eventOnDay(event,date){const {start,end}=dayRange(date);return new Date(event.start?.dateTime||(event.start?.date+'T00:00:00'))<end&&new Date(event.end?.dateTime||(event.end?.date+'T00:00:00'))>start;}
+export function shiftCalendar(date,view,direction){const d=new Date(date);if(view==='month'){d.setDate(1);d.setMonth(d.getMonth()+direction);}else d.setDate(d.getDate()+direction*(view==='week'?7:1));return d;}

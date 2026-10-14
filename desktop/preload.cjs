@@ -6,6 +6,7 @@ contextBridge.exposeInMainWorld('desktop',{
   onWidget:callback=>ipcRenderer.on('widget-state',(_event,state)=>callback(state)),
   onNotificationError:callback=>ipcRenderer.on('notification-error',(_event,text)=>callback(text)),
   onReminder:callback=>ipcRenderer.on('reminder-open-event',(_event,event)=>callback(event)),
+  calendarView:value=>ipcRenderer.invoke('calendar-view',value),
   expand:value=>ipcRenderer.invoke('expand',value),
   editing:value=>ipcRenderer.invoke('editing',value),
   status:()=>ipcRenderer.invoke('status'),connect:()=>ipcRenderer.invoke('connect'),disconnect:()=>ipcRenderer.invoke('disconnect'),
