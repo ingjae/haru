@@ -120,3 +120,5 @@ Google 연결 전에는 샘플 일정이 표시된다. 실제 연결에는 Googl
 사용자가 Cloud 본인 인증 완료를 알렸다. Google Tasks API를 활성화했고 Haru에서 실제 할일과 기존 완료 상태를 표시하는 것을 확인했다.
 
 사용자 요청으로 README를 최신 Mac/Linux 제품 사양과 다운로드 중심으로 줄이고, 설치·사용·개발 문서를 분리했다. 언급한 실패는 이전 AppImage 파일명 오류이며 수정 후 Ubuntu 빌드와 후속 CI는 성공한 것을 확인했다.
+
+사용자가 할일 시간 지정을 요청했다. Google Tasks API 제약을 설명하고, 시간 지정 할일의 Google Calendar 블록을 함께 저장·관리하는 기능을 main에 구현했다. 현재 MacBook 샘플로 표시·완료·시간 해제를 확인했으며 실제 Google 쓰기와 릴리즈는 아직 하지 않았다.

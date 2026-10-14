@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {eventPayload,taskPayload,slotTime,validDate,visibleTask} from '../public/calendar.js';
+import {eventPayload,taskPayload,slotTime,validDate,visibleTask,taskSchedule} from '../public/calendar.js';
 test('all-day end is exclusive, even across month/year boundaries',()=>{const p=eventPayload({title:'휴가',start:'2026-12-31',end:'2027-01-02',allDay:true});assert.deepEqual(p.start,{date:'2026-12-31'});assert.deepEqual(p.end,{date:'2027-01-03'});assert.throws(()=>eventPayload({title:'x',start:'2026-02-30',end:'2026-03-01',allDay:true}));});
 test('timed recurring creation includes IANA zone and whitelists frequencies',()=>{const p=eventPayload({title:'집중',start:'2026-10-14T09:00',end:'2026-10-14T10:00',repeat:'WEEKLY',timeZone:'Asia/Seoul',description:'메모',location:'사무실'});assert.deepEqual(p.recurrence,['RRULE:FREQ=WEEKLY']);assert.equal(p.start.timeZone,'Asia/Seoul');assert.equal(p.description,'메모');assert.throws(()=>eventPayload({title:'x',start:'2026-10-14T09:00',end:'2026-10-14T10:00',reminder:'NaN'}));});
 test('tasks keep date-only semantics and reject invalid state',()=>{assert.equal(taskPayload({title:'정리',due:'2026-10-14'}).due,'2026-10-14T00:00:00.000Z');assert.equal(taskPayload({title:'정리'}).due,null);assert.throws(()=>taskPayload({title:'',status:'completed'}));assert.throws(()=>taskPayload({title:'x',status:'other'}));assert.throws(()=>validDate('2026-13-01'));});
@@ -16,4 +16,12 @@ test('completed tasks show only on today using completion date rather than due d
   assert.equal(visibleTask({deleted:true,status:'completed',completed:today.toISOString()},today,today),false);
   assert.equal(visibleTask({status:'needsAction'},today,today),true);
   assert.equal(visibleTask({status:'needsAction',due:'2026-10-13T00:00:00Z'},today,today),false);
+});
+
+test('scheduled tasks span midnight and validate required times',()=>{
+  const task={status:'needsAction',due:'2026-10-14T00:00:00Z',schedule:{calendarId:'primary',start:'2026-10-14T23:30',end:'2026-10-15T00:30'}};
+  assert.equal(visibleTask(task,new Date(2026,9,15),new Date(2026,9,15)),true);
+  assert.equal(visibleTask(task,new Date(2026,9,16),new Date(2026,9,16)),false);
+  assert.throws(()=>taskSchedule({calendarId:'primary',start:null,end:'2026-10-15T00:30'}),/입력/);
+  assert.equal(taskSchedule(null),null);
 });

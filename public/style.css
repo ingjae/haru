@@ -28,3 +28,5 @@ html:has(body.widget-collapsed),body.widget-collapsed{background:transparent}.de
 .view-filters{display:flex;gap:5px;margin-top:9px;flex:none}.view-filters button{font-size:10px;padding:3px 9px;border-radius:12px}.view-filters button[aria-pressed="true"]{background:var(--blue-bg);color:var(--accent);border-color:transparent}.widget-collapsed .view-filters{display:none}#all-day .task-chip{color:var(--accent)}#all-day .task-chip.completed{text-decoration:line-through;color:var(--secondary)}
 
 .desktop-app #all-day{max-height:85px;overflow:auto;scrollbar-width:thin}
+
+.task-event{border-left-style:dashed}.task-event.completed strong{text-decoration:line-through}.task-event.completed{opacity:.65}

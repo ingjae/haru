@@ -246,3 +246,11 @@ Linux AppImage 워크플로 38513958682가 성공했다. Ubuntu 24.04 x86_64에�
 ## 버전별 실기기 검증 표시 — 2026-10-14
 
 사용자 요청으로 README에 v0.0.1/2/3의 현재 Apple Silicon MacBook 패키지 실행 PASS와 CI 링크를 추가했다. 실기기는 이 MacBook 한 대뿐이며 Linux 실기기는 NOT TESTED로 표시했다. Ubuntu Xvfb CI와 실기기 검증을 구분하고, 패키지 실행 PASS가 전체 기능·실제 Google 쓰기 검증을 뜻하지 않는다고 명시했다. 개발 실행에서 Google 조회를 확인한 범위도 별도 표시했다.
+
+## 할일 시간 지정 — main 미출시
+
+사용자 요청으로 할일 폼에 시간 지정·시작/종료·저장 캘린더를 추가했다. Google Tasks 공식 API는 시간을 읽거나 쓰지 않으므로 Calendar companion event에 private haruTaskKey/haruTaskList/haruTaskId로 연결한다. Tasks notes에는 기술 메타데이터를 넣지 않는다. owner/writer 캘린더에서 연결 블록을 찾아 재시작 후 시간 복원. 일정/할일 표시 토글과 완료 필터를 연결 블록에도 적용한다.
+
+새 desktop/task-scheduling.cjs는 입력 재검증, 결정적 Calendar event ID, 생성 실패 시 정리, 수정 실패 시 Tasks 복구, 삭제 실패 시 Calendar 블록 복구를 수행한다. 네트워크의 불확실한 응답까지 두 API의 원자성을 보장하지는 않으며 실제 계정 쓰기는 미검증. 시간 블록의 캘린더 이동·Google 웹 양방향 자동 동기화는 미구현.
+
+현재 MacBook 데모에서 17–18시 할일 생성, 시간 블록 클릭→할일 편집, 완료 체크와 ✓ 블록, 시간 해제 후 할일 유지·블록 제거를 확인했다. 폼 샘플 화면은 docs/assets/screenshots/timed-task-form.png. 기존 v0.0.3 릴리즈·태그·설치 파일은 변경하지 않는다.

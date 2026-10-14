@@ -12,7 +12,7 @@ contextBridge.exposeInMainWorld('desktop',{
   events:(start,end,calendar)=>ipcRenderer.invoke('events',start,end,calendar),update:(id,input,calendar)=>ipcRenderer.invoke('update',id,input,calendar),
   createEvent:(calendar,input)=>ipcRenderer.invoke('create-event',calendar,input),deleteEvent:(calendar,id)=>ipcRenderer.invoke('delete-event',calendar,id),
   taskLists:()=>ipcRenderer.invoke('task-lists'),tasks:list=>ipcRenderer.invoke('tasks',list),
-  createTask:(list,input)=>ipcRenderer.invoke('create-task',list,input),updateTask:(list,id,input)=>ipcRenderer.invoke('update-task',list,id,input),deleteTask:(list,id)=>ipcRenderer.invoke('delete-task',list,id),
+  createTask:(list,input)=>ipcRenderer.invoke('create-task',list,input),updateTask:(list,id,input)=>ipcRenderer.invoke('update-task',list,id,input),deleteTask:(list,id,calendar)=>ipcRenderer.invoke('delete-task',list,id,calendar),
   schedule:events=>ipcRenderer.invoke('schedule',events),notifications:()=>ipcRenderer.invoke('notifications'),
   displayKinds:value=>ipcRenderer.invoke('display-kinds',value),
   collapsedTitles:value=>ipcRenderer.invoke('collapsed-titles',value),

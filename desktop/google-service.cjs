@@ -13,10 +13,12 @@ function createGoogleService(access,fetcher=fetch){
   return {
     calendars:()=>list('calendar','/users/me/calendarList',{maxResults:'250'}),
     events:(c,start,end)=>list('calendar',eventPath(c),{timeMin:start,timeMax:end,singleEvents:'true',orderBy:'startTime',maxResults:'2500'}),
+    taskBlocks:(c,property,value)=>list('calendar',eventPath(c),{privateExtendedProperty:property+'='+value,maxResults:'2500'}),
     create:(c,body)=>request('calendar',eventPath(c),{method:'POST',body:JSON.stringify(body)}),
     update:(c,id,body)=>request('calendar',eventPath(c)+'/'+identifier(id),{method:'PATCH',body:JSON.stringify(body)}),
     remove:(c,id)=>request('calendar',eventPath(c)+'/'+identifier(id),{method:'DELETE'}),
     taskLists:()=>list('tasks','/users/@me/lists',{maxResults:'100'}),
+    getTask:(l,id)=>request('tasks',taskPath(l)+'/'+identifier(id)),
     tasks:l=>list('tasks',taskPath(l),{maxResults:'100',showCompleted:'true',showHidden:'true',showDeleted:'false'}),
     createTask:(l,body)=>request('tasks',taskPath(l),{method:'POST',body:JSON.stringify(body)}),
     updateTask:(l,id,body)=>request('tasks',taskPath(l)+'/'+identifier(id),{method:'PATCH',body:JSON.stringify(body)}),

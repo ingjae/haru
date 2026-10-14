@@ -6,6 +6,7 @@ const crypto=require('node:crypto');
 const {spawn}=require('node:child_process');
 const {desktopCredential,authError}=require('./google-auth.cjs');
 const {parseMouseDown,shouldDismiss,menuBarPanelBounds}=require('./widget-dismissal.cjs');
+const {createTaskScheduling}=require('./task-scheduling.cjs');
 const {createGoogleService}=require('./google-service.cjs');
 const {WIDTHS,menuBarWidth}=require('./menubar-layout.cjs');
 const RAIL_WIDTH=24;
@@ -93,7 +94,7 @@ async function access(){
   if(Date.now()>token.expires_at-60000){if(!token.refresh_token)throw Error('인증이 만료되었습니다. 다시 연결해 주세요.');const result=await exchange({client_id:token.client_id,client_secret:token.client_secret,refresh_token:token.refresh_token,grant_type:'refresh_token'});token={...token,...result,expires_at:Date.now()+result.expires_in*1000};await persist();}
   return token.access_token;
 }
-const google=createGoogleService(access);
+const google=createGoogleService(access),taskScheduling=createTaskScheduling(google);
 function position(next){
   if(!positionModes.includes(next))return;marker?.hide();manualExpanded=false;mode=next;preferences.mode=next;savePreferences().catch(()=>{});
   const area=screen.getDisplayMatching(win.getBounds()).workArea;
@@ -158,11 +159,10 @@ if(!app.requestSingleInstanceLock()){app.quit();}else app.whenReady().then(async
   handle('create-event',async(calendarId,input)=>google.create(calendarId,await safeEvent(input)));
   handle('update',async(id,input,calendarId='primary')=>google.update(calendarId,id,await safeEvent(input)));
   handle('delete-event',(calendarId,id)=>google.remove(calendarId,id));
-  handle('task-lists',()=>google.taskLists());handle('tasks',list=>google.tasks(list));
-  async function safeTask(input){const {taskPayload}=await import('../public/calendar.js');return taskPayload(input);}
-  handle('create-task',async(list,input)=>google.createTask(list,await safeTask(input)));
-  handle('update-task',async(list,id,input)=>google.updateTask(list,id,await safeTask(input)));
-  handle('delete-task',(list,id)=>google.removeTask(list,id));
+  handle('task-lists',()=>google.taskLists());handle('tasks',list=>taskScheduling.list(list));
+  handle('create-task',(list,input)=>taskScheduling.create(list,input));
+  handle('update-task',(list,id,input)=>taskScheduling.update(list,id,input));
+  handle('delete-task',(list,id,calendarId)=>taskScheduling.remove(list,id,calendarId));
   handle('reserve-space',async value=>{preferences.reserveSpace=!!value;await savePreferences();if(value)startLayout(true);else sendLayout();return{enabled:!!preferences.reserveSpace,trusted:layoutTrusted};});
   handle('timeline-range',async(start,end)=>{const {timelineRange}=await import('../public/calendar.js');const range=timelineRange(start,end);preferences.timelineStart=range.startMinutes;preferences.timelineEnd=range.endMinutes;await savePreferences();win.webContents.send('widget-state',widgetState());return range;});
   handle('display-kinds',async value=>{if(typeof value?.events!=='boolean'||typeof value?.tasks!=='boolean')throw Error('표시 설정을 확인해 주세요.');preferences.showEvents=value.events;preferences.showTasks=value.tasks;await savePreferences();win.webContents.send('widget-state',widgetState());});

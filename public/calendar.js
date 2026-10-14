@@ -54,5 +54,15 @@ export function taskPayload({title,notes='',due='',status='needsAction'}){if(typ
 export function visibleTask(task,viewDate=new Date(),now=new Date()){
   if(task.deleted)return false;
   if(task.status==='completed')return dateInput(viewDate)===dateInput(now)&&Number.isFinite(Date.parse(task.completed))&&dateInput(task.completed)===dateInput(now);
+  if(task.schedule){const day=dayRange(viewDate);return new Date(task.schedule.start)<day.end&&new Date(task.schedule.end)>day.start;}
   return !task.due||task.due.slice(0,10)===dateInput(viewDate);
+}
+
+export function taskSchedule(schedule){
+  if(schedule==null)return null;
+  if(typeof schedule.calendarId!=='string'||!schedule.calendarId||schedule.calendarId.length>1024)throw Error('할일 시간을 저장할 캘린더를 선택해 주세요.');
+  if(typeof schedule.start!=='string'||typeof schedule.end!=='string')throw Error('할일 시작·종료 시간을 입력해 주세요.');
+  const start=new Date(schedule.start),end=new Date(schedule.end);
+  if(!Number.isFinite(+start)||!Number.isFinite(+end)||end<=start)throw Error('할일 종료 시간은 시작 시간보다 늦어야 합니다.');
+  return {calendarId:schedule.calendarId,start:localInput(start),end:localInput(end)};
 }

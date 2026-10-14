@@ -29,6 +29,7 @@ jobs:
           node --check desktop/preload.cjs
           node --check desktop/google-auth.cjs
           node --check desktop/google-service.cjs
+          node --check desktop/task-scheduling.cjs
           node --check desktop/menubar-layout.cjs
           node --check desktop/widget-dismissal.cjs
           node --check public/app.js
