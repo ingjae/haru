@@ -150,3 +150,7 @@ Mac 샘플에서 할일 생성→완료→월 칸 스크롤 후 체크 네모·�
 v0.0.4 최종 코드 fe61052: 자동 테스트 57개、Mac/Linux CI 38558357427 통과。Ubuntu AppImage 38558357336 빌드·sandbox 유지 Xvfb 샘플 실행통과。초기 실패는 smoke가 첫 저장 종료 전에 다음 제출을 수행한 경합이며 저장 완료 대기로 해결.최종 Mac DMG hdiutil verify통과、현재 MacBook에서 패키지 실행·설정 v0.0.4 확인.태그·공개 릴리즈 미생성.
 
 준비 완료: Mac DMG·Ubuntu AppImage 및 체크섬을 dist/release-0.0.4/에 보관. 양쪽 로컬 SHA-256 확인 통과. Linux 아티팩트 다운로드 완료. 현재 Mac은 기존 Google 연결의 개발 앱 v0.0.4로 재실행. 공개 릴리즈는 아직 v0.0.3.
+
+## v0.0.4 공개 완료 — 2026-10-14
+
+사용자 요청으로 https://github.com/ingjae/haru/releases/tag/v0.0.4 를 최신 정식 릴리즈로 게시. 태그 대상 a35089b. Mac DMG·Ubuntu x86_64 AppImage·양 플랫폼 체크섬 총 4개 자산 uploaded, draft=false/prerelease=false/latest=v0.0.4 확인. GitHub 자산 digest가 로컬 검증 SHA-256과 일치. 제품 소스는 검증·빌드한 fe61052와 동일하며 이후 변경은 문서만. README 다운로드·설치 문서·CHANGELOG 갱신. 기존 v0.0.3 릴리즈 변경 없음.
