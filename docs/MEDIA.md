@@ -48,3 +48,5 @@ macOS의 Arial 폰트와 `ffmpeg`가 필요합니다. 스크립트는 로고·�
 ![레일 사용 예시 — 이전 디자인](assets/walkthrough.gif)
 
 새 macOS 디자인: [밝은·어두운 화면](assets/redesign-preview.png). 생성·할일 화면: [샘플](assets/screenshots/create-and-tasks.png). 패키지 설정 버전: [v0.0.3](assets/screenshots/v0.0.3-settings.png).
+
+`public/fonts/NotoSansKR.ttf`는 Google Fonts의 Noto Sans KR이며 해당 글꼴은 MIT 대신 동봉한 [SIL Open Font License](../public/fonts/OFL-NotoSansKR.txt)를 따릅니다.

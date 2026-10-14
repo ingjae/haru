@@ -254,3 +254,15 @@ Linux AppImage 워크플로 38513958682가 성공했다. Ubuntu 24.04 x86_64에�
 새 desktop/task-scheduling.cjs는 입력 재검증, 결정적 Calendar event ID, 생성 실패 시 정리, 수정 실패 시 Tasks 복구, 삭제 실패 시 Calendar 블록 복구를 수행한다. 네트워크의 불확실한 응답까지 두 API의 원자성을 보장하지는 않으며 실제 계정 쓰기는 미검증. 시간 블록의 캘린더 이동·Google 웹 양방향 자동 동기화는 미구현.
 
 현재 MacBook 데모에서 17–18시 할일 생성, 시간 블록 클릭→할일 편집, 완료 체크와 ✓ 블록, 시간 해제 후 할일 유지·블록 제거를 확인했다. 폼 샘플 화면은 docs/assets/screenshots/timed-task-form.png. 기존 v0.0.3 릴리즈·태그·설치 파일은 변경하지 않는다.
+
+## 일정 제목·알림·말풍선 — main 미출시
+
+사용자가 확장 화면 일정 제목의 글자 깨짐, 알림 켜기/끄기 이상, 귀여운 레일 말풍선 애니메이션을 요청했다. 글꼴 부족을 대비해 Google Fonts 공식 Noto Sans KR 변수 글꼴과 OFL 라이선스를 동봉하고 로컬 font/ttf로 제공한다. 짧은 확장 블록은 최소 22px, 한 줄 제목, 46px 이상만 시간 줄을 표시하며 최소 표시 높이를 겹침 배치에도 반영한다. 축소 레일 크기는 유지한다. 제목의 checkbox 유니코드 접두사를 제거하고 주요 버튼을 SVG로 교체했다.
+
+알림 버튼은 true/false 실제 스위치로 바뀌고 preferences 저장·재표시 상태를 동기화했다. 기본/다중 popup 알림, 중복 방지, 완료된 task block 제외, timer 갱신/취소 테스트 추가. scheduler 갱신을 render에서 성공한 refresh로 분리하여 redraw·네트워크 오류가 알림을 지우지 않도록 했다. 시간 지정 Task block은 시작 알림을 사용한다.
+
+desktop/reminder.html/css/js 및 sandbox preload가 별도 304×116 비활성 native panel에 말풍선을 표시한다. 눈·입이 있는 작은 SVG 얼굴, 꼬리, 없음/slide/pop, OS reduced motion, 8초 숨김(미리보기는 20초), 닫기/클릭 열기. 알림이 레일을 자동으로 펼치지 않는다. 편집·설정 UI와 분리한다. 사용자 데이터는 textContent로 표시한다.
+
+현재 MacBook 데모에서 알림 켜기→끄기 상태, 없음 애니메이션 선택, 미리보기 뒤 레일 축소 유지 및 native Window 메뉴의 Haru 알림 창을 확인했다. 도구가 별도 비활성 패널의 픽셀을 캡처하지 못했고, 브라우저 정책상 로컬 file:// 디자인 미리보기도 차단되어 우회하지 않았다. settings 샘플 화면은 docs/assets/screenshots/reminder-settings.png. 실제 OS 알림 권한과 Google 실제 일정 발화는 미검증. 자동 테스트 48개 통과. 기존 v0.0.3 배포 파일은 그대로다.
+
+추가 Mac 확인: 420×660 메뉴바 아래 샘플 패널에서 30분·1시간 일정의 제목이 온전히 한 줄로 표시되는 것을 시각 확인했다. docs/assets/screenshots/compact-titles-fixed.png에 저장했다. 알림 켜기/끄기·애니메이션 없음 설정이 재로드 후 유지된 것도 확인했다.

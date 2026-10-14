@@ -66,3 +66,8 @@ export function taskSchedule(schedule){
   if(!Number.isFinite(+start)||!Number.isFinite(+end)||end<=start)throw Error('할일 종료 시간은 시작 시간보다 늦어야 합니다.');
   return {calendarId:schedule.calendarId,start:localInput(start),end:localInput(end)};
 }
+
+export function eventBlockMetrics(durationMs,pixelsPerHour,collapsed=false){
+  const height=Math.max(collapsed?5:22,durationMs/3600000*pixelsPerHour-2);
+  return {height,compact:!collapsed&&height<46,showTime:!collapsed&&height>=46};
+}
