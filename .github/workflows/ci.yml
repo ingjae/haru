@@ -28,8 +28,12 @@ jobs:
           node --check desktop/main.cjs
           node --check desktop/preload.cjs
           node --check desktop/google-auth.cjs
+          node --check desktop/google-service.cjs
+          node --check desktop/menubar-layout.cjs
+          node --check desktop/widget-dismissal.cjs
           node --check public/app.js
           node --check public/calendar.js
+          node --check public/menubar.js
       - name: Native helper build
         if: runner.os == 'macOS'
         run: npm run build:native

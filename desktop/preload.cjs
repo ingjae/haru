@@ -8,11 +8,20 @@ contextBridge.exposeInMainWorld('desktop',{
   expand:value=>ipcRenderer.invoke('expand',value),
   editing:value=>ipcRenderer.invoke('editing',value),
   status:()=>ipcRenderer.invoke('status'),connect:()=>ipcRenderer.invoke('connect'),disconnect:()=>ipcRenderer.invoke('disconnect'),
-  events:(start,end)=>ipcRenderer.invoke('events',start,end),update:(id,patch)=>ipcRenderer.invoke('update',id,patch),
+  connectExtended:()=>ipcRenderer.invoke('connect-extended'),calendars:()=>ipcRenderer.invoke('calendars'),
+  events:(start,end,calendar)=>ipcRenderer.invoke('events',start,end,calendar),update:(id,input,calendar)=>ipcRenderer.invoke('update',id,input,calendar),
+  createEvent:(calendar,input)=>ipcRenderer.invoke('create-event',calendar,input),deleteEvent:(calendar,id)=>ipcRenderer.invoke('delete-event',calendar,id),
+  taskLists:()=>ipcRenderer.invoke('task-lists'),tasks:list=>ipcRenderer.invoke('tasks',list),
+  createTask:(list,input)=>ipcRenderer.invoke('create-task',list,input),updateTask:(list,id,input)=>ipcRenderer.invoke('update-task',list,id,input),deleteTask:(list,id)=>ipcRenderer.invoke('delete-task',list,id),
   schedule:events=>ipcRenderer.invoke('schedule',events),notifications:()=>ipcRenderer.invoke('notifications'),
+  displayKinds:value=>ipcRenderer.invoke('display-kinds',value),
   collapsedTitles:value=>ipcRenderer.invoke('collapsed-titles',value),
   timePointer:y=>ipcRenderer.invoke('time-pointer',y),
+  menuBarMetrics:()=>ipcRenderer.invoke('menubar-metrics'),
+  menuBarImage:(data,tooltip)=>ipcRenderer.invoke('menubar-image',data,tooltip),
+  menuBarWidth:value=>ipcRenderer.invoke('menubar-width',value),
+  timelineRange:(start,end)=>ipcRenderer.invoke('timeline-range',start,end),
   railBackground:value=>ipcRenderer.invoke('rail-background',value),
   opacity:value=>ipcRenderer.invoke('opacity',value),
-  position:mode=>ipcRenderer.invoke('position',mode),pin:value=>ipcRenderer.invoke('pin',value),openMeeting:url=>ipcRenderer.invoke('open-meeting',url)
+  position:mode=>ipcRenderer.invoke('position',mode),pin:value=>ipcRenderer.invoke('pin',value),openCalendar:()=>ipcRenderer.invoke('open-calendar'),openMeeting:url=>ipcRenderer.invoke('open-meeting',url)
 });

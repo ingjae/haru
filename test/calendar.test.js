@@ -31,3 +31,21 @@ test('meeting links in invitation text are recognized safely',()=>{
   assert.equal(meetingURL({description:'https://meet.google.com.evil.example/abc'}),null);
   assert.equal(meetingURL({description:'http://meet.google.com/abc-defg-hij'}),null);
 });
+
+test('timeline ranges default to 09–21 and support half-hour boundaries and midnight',async()=>{
+ const {timelineRange,timelineTime}=await import('../public/calendar.js');
+ assert.deepEqual(timelineRange(),{startMinutes:540,endMinutes:1260});
+ assert.deepEqual(timelineRange(510,1110),{startMinutes:510,endMinutes:1110});
+ assert.equal(timelineTime(510),'08:30');assert.equal(timelineTime(1440),'24:00');
+ assert.deepEqual(timelineRange(0,1440),{startMinutes:0,endMinutes:1440});
+ for(const args of [[1260,540],[-30,1260],[540,1500],[540,550],[NaN,1260]])assert.throws(()=>timelineRange(...args));
+});
+test('outside-range buttons use exact boundaries, including next-day end times',async()=>{
+ const {outsideTimeline,timelineRange}=await import('../public/calendar.js');
+ const start=new Date(2026,9,13),range=timelineRange();
+ const event=(h,end)=>({start:{dateTime:new Date(2026,9,13,h).toISOString()},end:{dateTime:new Date(2026,9,13,end).toISOString()}});
+ assert.equal(outsideTimeline(event(9,21),start,range),false);
+ assert.equal(outsideTimeline(event(8,10),start,range),true);
+ assert.equal(outsideTimeline(event(20,24),start,range),true);
+ assert.equal(outsideTimeline(event(0,24),start,timelineRange(0,1440)),false);
+});

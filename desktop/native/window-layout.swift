@@ -38,6 +38,17 @@ let clickMonitor = NSEvent.addGlobalMonitorForEvents(matching: [.leftMouseDown, 
     guard let point = event.cgEvent?.location else { return }
     print("mouse-down \(point.x) \(point.y)"); fflush(stdout)
 }
+// Quartz counters cover clicks omitted by the AppKit global event monitor.
+// Only mouse-down counts and the current pointer position are read.
+let clickTypes: [CGEventType] = [.leftMouseDown, .rightMouseDown, .otherMouseDown]
+var clickCounts = clickTypes.map { CGEventSource.counterForEventType(.combinedSessionState, eventType: $0) }
+Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { _ in
+    let next = clickTypes.map { CGEventSource.counterForEventType(.combinedSessionState, eventType: $0) }
+    guard next != clickCounts else { return }
+    clickCounts = next
+    guard let point = CGEvent(source: nil)?.location else { return }
+    print("mouse-down \(point.x) \(point.y)"); fflush(stdout)
+}
 Timer.scheduledTimer(withTimeInterval: 0.6, repeats: true) { _ in
     let current = AXIsProcessTrusted()
     if current != trusted { trusted = current; report(current) }
