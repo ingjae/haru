@@ -26,14 +26,14 @@ Haru는 **24px 레일**로 오늘의 일정 분포와 현재 시간을 계속 �
 | 표시 설정 | 배경·세로 제목·전체 투명도·시간 범위, 시스템 밝은/어두운 모드 |
 | macOS 메뉴바 | 가로 타임라인, 120–1200px 또는 자동 최대 폭, 클릭 상세 패널 |
 
-**v0.0.4 준비 중:** 짧은 일정 제목 잘림·한글 글꼴 보완, 실제 알림 켜기/끄기와 레일 옆 말풍선 애니메이션을 추가했습니다. 할일에 시작·종료 시간을 지정하면 Google 캘린더에도 시간 블록을 함께 저장합니다. v0.0.3 다운로드 파일에는 아직 포함되지 않습니다. 시간 없는 할일은 날짜 단위로 표시합니다. 오늘 완료한 할일은 예정 날짜와 관계없이 오늘 화면에 남고, 이전 완료 항목은 숨깁니다. 설정과 편집 중에는 펼친 화면을 유지합니다.
+**v0.0.4 추가 기능:** 짧은 일정 제목 잘림·한글 글꼴 보완, 실제 알림 켜기/끄기와 레일 옆 말풍선 애니메이션을 추가했습니다. 할일에 시작·종료 시간을 지정하면 Google 캘린더에도 시간 블록을 함께 저장합니다. v0.0.4 다운로드에 포함됩니다. 시간 없는 할일은 날짜 단위로 표시합니다. 오늘 완료한 할일은 예정 날짜와 관계없이 오늘 화면에 남고, 이전 완료 항목은 숨깁니다. 설정과 편집 중에는 펼친 화면을 유지합니다.
 
 ## 다운로드
 
 | 플랫폼 | 배포 파일 | 설치 안내 |
 | --- | --- | --- |
-| macOS · Apple Silicon | [Haru-0.0.3-arm64.dmg](https://github.com/ingjae/haru/releases/download/v0.0.3/Haru-0.0.3-arm64.dmg) | [Mac 설치](docs/INSTALL.md#macos--apple-silicon) |
-| Ubuntu 24.04 · x86_64 | [Haru-0.0.3-x86_64.AppImage](https://github.com/ingjae/haru/releases/download/v0.0.3/Haru-0.0.3-x86_64.AppImage) | [Linux 설치](docs/LINUX.md) |
+| macOS · Apple Silicon | [Haru-0.0.4-arm64.dmg](https://github.com/ingjae/haru/releases/download/v0.0.4/Haru-0.0.4-arm64.dmg) | [Mac 설치](docs/INSTALL.md#macos--apple-silicon) |
+| Ubuntu 24.04 · x86_64 | [Haru-0.0.4-x86_64.AppImage](https://github.com/ingjae/haru/releases/download/v0.0.4/Haru-0.0.4-x86_64.AppImage) | [Linux 설치](docs/LINUX.md) |
 
 [릴리즈와 체크섬](https://github.com/ingjae/haru/releases/latest) · Mac 패키지는 서명·공증하지 않은 개발 버전입니다. Linux의 화면 배치는 데스크톱 환경에 따라 제한될 수 있습니다. 긴 시스템 메뉴바 타임라인과 다른 앱의 창 공간 보정은 macOS 전용입니다.
 
@@ -48,7 +48,7 @@ Haru는 **24px 레일**로 오늘의 일정 분포와 현재 시간을 계속 �
 
 | 버전 | 현재 MacBook · 실기기 | Ubuntu 24.04 · 실기기 | 자동 검증 |
 | --- | --- | --- | --- |
-| [v0.0.4 준비](docs/releases/v0.0.4.md) | ✅ **PASS** · 현재 MacBook arm64 패키지 실행·설정 버전 표시 | ⬜ **NOT TESTED** | ✅ [Mac/Linux CI](https://github.com/ingjae/haru/actions/runs/38558357427), [Ubuntu AppImage·Xvfb 실행](https://github.com/ingjae/haru/actions/runs/38558357336) |
+| [v0.0.4](https://github.com/ingjae/haru/releases/tag/v0.0.4) | ✅ **PASS** · 현재 MacBook arm64 패키지 실행·설정 버전 표시 | ⬜ **NOT TESTED** | ✅ [Mac/Linux CI](https://github.com/ingjae/haru/actions/runs/38558357427), [Ubuntu AppImage·Xvfb 실행](https://github.com/ingjae/haru/actions/runs/38558357336) |
 | [v0.0.3](https://github.com/ingjae/haru/releases/tag/v0.0.3) | ✅ **PASS** · arm64 패키지 실행·화면·버전 표시 | ⬜ **NOT TESTED** | ✅ [Mac/Linux CI](https://github.com/ingjae/haru/actions/runs/38512005402), [Ubuntu AppImage 빌드·Xvfb 샘플 실행](https://github.com/ingjae/haru/actions/runs/38513958682) |
 | [v0.0.2](https://github.com/ingjae/haru/releases/tag/v0.0.2) | ✅ **PASS** · arm64 패키지 실행 | — Linux 배포 없음 | ✅ [CI](https://github.com/ingjae/haru/actions/runs/38379026435) |
 | [v0.0.1](https://github.com/ingjae/haru/releases/tag/v0.0.1) | ✅ **PASS** · arm64 패키지 실행 | — Linux 배포 없음 | 로컬 테스트·DMG 무결성 확인 |
@@ -72,10 +72,10 @@ OAuth와 일정·할일은 이 기기에서 Google과 직접 통신합니다. �
 
 [MIT License](LICENSE) · Copyright © 2026 ingjae
 
-### 주·월 보기 (main 개발 버전)
+### 주·월 보기
 
-상단 일·주·월 버튼으로 보기를 선택합니다. 주·월은 최대 1180px로 확대되며 화면 안에 맞춥니다. 월은 월요일 기준 6주 달력, 주는 7일 목록입니다. 날짜 숫자는 일 보기, ＋는 해당 날짜 일정·할일 생성, 일정 제목은 상세 편집으로 연결됩니다. 이전·다음은 선택한 보기 단위로 이동합니다. 날짜 안의 일정이 많으면 해당 칸을 스크롤합니다. v0.0.3 배포 파일에는 아직 포함되지 않았습니다.
+상단 일·주·월 버튼으로 보기를 선택합니다. 주·월은 최대 1180px로 확대되며 화면 안에 맞춥니다. 월은 월요일 기준 6주 달력, 주는 7일 목록입니다. 날짜 숫자는 일 보기, ＋는 해당 날짜 일정·할일 생성, 일정 제목은 상세 편집으로 연결됩니다. 이전·다음은 선택한 보기 단위로 이동합니다. 날짜 안의 일정이 많으면 해당 칸을 스크롤합니다. v0.0.4부터 지원합니다.
 
-main 개발 버전: 상단 **캘린더**에서 표시할 캘린더·할일 목록을 여러 개 선택할 수 있습니다. 기존 항목은 원래 그룹에 수정되며 완료한 할일은 체크된 네모·취소선으로 표시됩니다.
+v0.0.4: 상단 **캘린더**에서 표시할 캘린더·할일 목록을 여러 개 선택할 수 있습니다. 기존 항목은 원래 그룹에 수정되며 완료한 할일은 체크된 네모·취소선으로 표시됩니다.
 
-다음 릴리즈는 **v0.0.4 준비 중**입니다. 주·월 보기, 그룹 색상과 정리한 설정 UI를 포함하며 공개 설치 파일은 아직 v0.0.3입니다. [릴리즈 초안과 검증 상태](docs/releases/v0.0.4.md)
+최신 릴리즈는 **v0.0.4**입니다. 주·월 보기, 그룹 색상과 정리한 설정 UI를 포함합니다. [릴리즈 변경 사항과 검증 상태](docs/releases/v0.0.4.md)
