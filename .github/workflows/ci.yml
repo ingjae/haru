@@ -38,6 +38,7 @@ jobs:
           node --check public/app.js
           node --check public/calendar.js
           node --check public/menubar.js
+          node --check public/source-groups.js
       - name: Native helper build
         if: runner.os == 'macOS'
         run: npm run build:native

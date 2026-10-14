@@ -5,7 +5,11 @@ on:
       release_tag:
         description: Existing release to receive the Ubuntu 24.04 x86_64 AppImage
         required: true
-        default: v0.0.3
+        default: v0.0.4
+      upload_release:
+        description: Upload to an existing release (leave false to prepare artifacts only)
+        type: boolean
+        default: false
 permissions:
   contents: write
 jobs:
@@ -24,7 +28,7 @@ jobs:
           RELEASE_TAG: ${{ inputs.release_tag }}
         run: |
           test "$RELEASE_TAG" = "v$(node -p 'require("./package.json").version')"
-          gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY"
+          if [ "${{ inputs.upload_release }}" = "true" ]; then gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY"; fi
       - name: Install runtime and display dependencies
         run: |
           sudo apt-get update
@@ -51,6 +55,7 @@ jobs:
             dist/SHA256SUMS-linux.txt
             dist/linux-smoke.png
       - name: Add AppImage to the existing release
+        if: inputs.upload_release
         env:
           GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ inputs.release_tag }}

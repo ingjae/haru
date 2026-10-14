@@ -14,7 +14,7 @@ async function run(win){
     await wait(()=>document.querySelectorAll('.task-row').length===1);
     document.querySelector('.task-row input').click();await wait(()=>document.querySelector('.task-row.completed'));
     document.getElementById('settings-open').click();
-    await wait(()=>document.getElementById('app-version').textContent==='v0.0.3');
+    await wait(()=>document.getElementById('app-version').textContent==='v'+${JSON.stringify(require('../package.json').version)});
     return {version:document.getElementById('app-version').textContent,events:document.getElementById('count').textContent,completedToday:document.querySelectorAll('.task-row.completed').length};
   })()`);
   console.info('LINUX_SMOKE_OK',JSON.stringify(result));
