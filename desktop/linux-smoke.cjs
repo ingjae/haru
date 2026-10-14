@@ -7,11 +7,11 @@ async function run(win){
     document.getElementById('new-item').click();
     await wait(()=>document.getElementById('detail').open,'open editor');
     document.getElementById('title').value='Linux sample event';document.getElementById('edit').requestSubmit();
-    await wait(()=>!document.getElementById('detail').open&&document.getElementById('count').textContent==='5','save event');
+    await wait(()=>!document.getElementById('detail').open&&document.getElementById('count').textContent==='5'&&!document.getElementById('save').disabled,'save event');
     document.getElementById('new-item').click();await wait(()=>document.getElementById('detail').open,'open editor');
     const kind=document.getElementById('item-kind');kind.value='task';kind.dispatchEvent(new Event('change'));
     document.getElementById('title').value='Linux sample task';document.getElementById('edit').requestSubmit();
-    await wait(()=>document.querySelectorAll('.task-row').length===1,'save task');
+    await wait(()=>document.querySelectorAll('.task-row').length===1&&!document.getElementById('save').disabled,'save task');
     document.querySelector('.task-row input').click();await wait(()=>document.querySelector('.task-row.completed'),'complete task');
     document.getElementById('settings-open').click();
     await wait(()=>document.getElementById('app-version').textContent==='v'+${JSON.stringify(require('../package.json').version)},'settings version');
