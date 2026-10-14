@@ -1,5 +1,9 @@
 # 변경 이력
 
+## Unreleased
+
+- 축소 레일에서 일정·회의 요약이 남아 위쪽 배경에 빈 공간을 만드는 스타일 충돌 수정.
+
 ## v0.0.4 — 2026-10-14
 
 Mac Apple Silicon DMG와 Ubuntu 24.04 x86_64 AppImage를 함께 제공합니다.

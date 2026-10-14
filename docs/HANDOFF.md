@@ -296,3 +296,7 @@ v0.0.4 최종 코드 fe61052: 자동 테스트 57개、Mac/Linux CI 38558357427 
 ## v0.0.4 공개 완료 — 2026-10-14
 
 사용자 요청으로 https://github.com/ingjae/haru/releases/tag/v0.0.4 를 최신 정식 릴리즈로 게시. 태그 대상 a35089b. Mac DMG·Ubuntu x86_64 AppImage·양 플랫폼 체크섬 총 4개 자산 uploaded, draft=false/prerelease=false/latest=v0.0.4 확인. GitHub 자산 digest가 로컬 검증 SHA-256과 일치. 제품 소스는 검증·빌드한 fe61052와 동일하며 이후 변경은 문서만. README 다운로드·설치 문서·CHANGELOG 갱신. 기존 v0.0.3 릴리즈 변경 없음.
+
+## 축소 레일 위쪽 빈 공간 수정 — main
+
+v0.0.4 디자인 정리의 .desktop-app .overview display:flex가 기존 축소 숨김 규칙과 동일한 specificity로 뒤에서 덮어써 요약 글자가 24px 레일 위에 남고 타임라인 위쪽에 약 100px 공백을 만들었다. .desktop-app.widget-collapsed .overview display:none을 적용. 현재 Mac 실제 Google 연결 앱 재실행 후 AX에서 요약 제거, 화면에서 레일이 위쪽부터 이어지는 것을 확인했다. Google 데이터나 배경 옵션 변경 없음. 기존 공개 v0.0.4 설치 파일은 교체하지 않았다.
