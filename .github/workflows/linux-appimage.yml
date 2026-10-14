@@ -34,15 +34,15 @@ jobs:
       - run: npm run package:linux -- --publish never
       - name: Smoke test the packaged app without disabling Chromium sandbox
         run: |
-          chmod +x dist/Haru-*-x64.AppImage
-          dist/Haru-*-x64.AppImage --appimage-extract > /dev/null
+          chmod +x dist/Haru-*-x86_64.AppImage
+          dist/Haru-*-x86_64.AppImage --appimage-extract > /dev/null
           sudo chown root:root squashfs-root/chrome-sandbox
           sudo chmod 4755 squashfs-root/chrome-sandbox
           HARU_SMOKE_SCREENSHOT="$PWD/dist/linux-smoke.png" dbus-run-session -- xvfb-run -a timeout 60 squashfs-root/haru --demo --smoke-test
       - name: Checksum
         run: |
           cd dist
-          sha256sum Haru-*-x64.AppImage > SHA256SUMS-linux.txt
+          sha256sum Haru-*-x86_64.AppImage > SHA256SUMS-linux.txt
       - uses: actions/upload-artifact@v4
         with:
           name: ubuntu-24.04-appimage

@@ -2,16 +2,16 @@
 
 v0.0.3에 Linux x86_64용 AppImage를 추가합니다. Ubuntu 24.04 GitHub 러너에서 빌드하고 Xvfb 가상 디스플레이에서 패키지의 샘플 일정·할일 생성과 완료 표시를 검사합니다. 실제 Ubuntu 데스크톱의 Google OAuth·Wayland·다중 모니터 동작은 별도 확인이 필요합니다.
 
-릴리즈에서 `Haru-0.0.3-x64.AppImage`와 `SHA256SUMS-linux.txt`를 내려받으세요.
+릴리즈에서 `Haru-0.0.3-x86_64.AppImage`와 `SHA256SUMS-linux.txt`를 내려받으세요.
 
 ```sh
 sudo apt install libfuse2t64 gnome-keyring libsecret-1-0
 sha256sum -c SHA256SUMS-linux.txt
-chmod +x Haru-0.0.3-x64.AppImage
-./Haru-0.0.3-x64.AppImage
+chmod +x Haru-0.0.3-x86_64.AppImage
+./Haru-0.0.3-x86_64.AppImage
 ```
 
-샘플로 살펴보려면 `./Haru-0.0.3-x64.AppImage --demo`를 사용합니다. Google 계정은 Linux에서 별도로 연결합니다. 잠금 해제된 GNOME Keyring이 필요하며 암호화 저장소가 없는 경우 연결을 거부합니다.
+샘플로 살펴보려면 `./Haru-0.0.3-x86_64.AppImage --demo`를 사용합니다. Google 계정은 Linux에서 별도로 연결합니다. 잠금 해제된 GNOME Keyring이 필요하며 암호화 저장소가 없는 경우 연결을 거부합니다.
 
 왼쪽/오른쪽 레일, 위쪽 패널, 일반 창과 일정·할일 기능을 포함합니다. macOS의 긴 시스템 메뉴바 타임라인·손쉬운 사용 기반 다른 앱 창 조정은 제공하지 않습니다. Linux의 클릭 확장은 포커스를 얻어 바깥 클릭 시 blur로 접히며, 자동 알림 표시는 포커스를 요청하지 않습니다. 트레이 지원은 데스크톱 환경에 따릅니다.
 
