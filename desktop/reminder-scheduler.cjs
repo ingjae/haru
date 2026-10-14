@@ -8,9 +8,9 @@ function createReminderScheduler({now=Date.now,setTimer=setTimeout,clearTimer=cl
       const start=Date.parse(event.start?.dateTime);if(!Number.isFinite(start)||event.status==='cancelled'||event.extendedProperties?.private?.haruTaskStatus==='completed')continue;
       let reminders=event.reminders?.useDefault?event.haruDefaultReminders:event.reminders?.overrides;if(event.extendedProperties?.private?.haruTaskId&&!reminders?.length)reminders=[{method:'popup',minutes:0}];
       for(const reminder of reminders||[]){const minute=reminder.minutes;if(reminder.method!=='popup'||!Number.isInteger(minute)||minute<0||minute>40320)continue;
-        const at=start-minute*60000,key=JSON.stringify([event.id,start,minute]);
+        const at=start-minute*60000,key=JSON.stringify([event.haruCalendarId||null,event.id,start,minute]);
         if(at<=current||at-current>2147483647||delivered.has(key))continue;
-        plans.set(key,{id:event.id,title:typeof event.summary==='string'?event.summary.slice(0,500):'일정 알림',start:event.start.dateTime,minutes:minute,taskId:event.extendedProperties?.private?.haruTaskId,taskList:event.extendedProperties?.private?.haruTaskList,at});
+        plans.set(key,{id:event.id,calendarId:event.haruCalendarId,title:typeof event.summary==='string'?event.summary.slice(0,500):'일정 알림',start:event.start.dateTime,minutes:minute,taskId:event.extendedProperties?.private?.haruTaskId,taskList:event.extendedProperties?.private?.haruTaskList,at});
       }
     }
     for(const [key,timer] of timers)if(!plans.has(key)){clearTimer(timer.handle);timers.delete(key);}
