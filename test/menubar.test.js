@@ -15,3 +15,4 @@ test('menu bar follows custom half-hour start and full-day end',()=>{
  const m=menuBarModel([],new Date(2026,9,13,12),510,1440);
  assert.equal(m.startLabel,'08:30');assert.equal(m.endLabel,'24:00');assert.ok(m.current>0&&m.current<1);
 });
+test('menu bar preserves group colors independently of event order and rejects malformed colors',()=>{const events=[{...event(9,10),haruColor:'#AF52DE'},{...event(11,12),haruColor:'invalid'}];const model=menuBarModel(events,new Date(2026,9,13,10));assert.equal(model.segments[0].groupColor,'#AF52DE');assert.equal(model.segments[1].groupColor,null);});
