@@ -42,6 +42,7 @@ Haru는 **24px 레일**로 오늘의 일정 분포와 현재 시간을 계속 �
 **실기기 테스트는 개발에 사용 중인 Apple Silicon MacBook 한 대에서만 확인했습니다.** 다른 Mac, Intel Mac, Linux 실기기는 아직 테스트하지 않았습니다. **PASS는 아래에 적힌 확인 범위만 뜻하며 전체 기능의 검증 완료를 의미하지 않습니다.**
 
 <p>
+  <img src="https://img.shields.io/badge/v0.0.4%20MacBook%20실행-PASS-2da44e" alt="v0.0.4 현재 MacBook 패키지 실행 PASS">
   <img src="https://img.shields.io/badge/v0.0.3%20MacBook%20실행-PASS-2da44e" alt="v0.0.3 현재 MacBook 패키지 실행 PASS">
   <img src="https://img.shields.io/badge/Linux%20실기기-NOT%20TESTED-636366" alt="Linux 실기기 NOT TESTED">
 </p>
