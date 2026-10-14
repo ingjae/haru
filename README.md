@@ -37,6 +37,23 @@ Google 할일은 날짜 단위로 표시합니다. 오늘 완료한 할일은 �
 
 [릴리즈와 체크섬](https://github.com/ingjae/haru/releases/latest) · Mac 패키지는 서명·공증하지 않은 개발 버전입니다. Linux의 화면 배치는 데스크톱 환경에 따라 제한될 수 있습니다. 긴 시스템 메뉴바 타임라인과 다른 앱의 창 공간 보정은 macOS 전용입니다.
 
+## 버전별 검증
+
+**실기기 테스트는 개발에 사용 중인 Apple Silicon MacBook 한 대에서만 확인했습니다.** 다른 Mac, Intel Mac, Linux 실기기는 아직 테스트하지 않았습니다. **PASS는 아래에 적힌 확인 범위만 뜻하며 전체 기능의 검증 완료를 의미하지 않습니다.**
+
+<p>
+  <img src="https://img.shields.io/badge/v0.0.3%20MacBook%20실행-PASS-2da44e" alt="v0.0.3 현재 MacBook 패키지 실행 PASS">
+  <img src="https://img.shields.io/badge/Linux%20실기기-NOT%20TESTED-636366" alt="Linux 실기기 NOT TESTED">
+</p>
+
+| 버전 | 현재 MacBook · 실기기 | Ubuntu 24.04 · 실기기 | 자동 검증 |
+| --- | --- | --- | --- |
+| [v0.0.3](https://github.com/ingjae/haru/releases/tag/v0.0.3) | ✅ **PASS** · arm64 패키지 실행·화면·버전 표시 | ⬜ **NOT TESTED** | ✅ [Mac/Linux CI](https://github.com/ingjae/haru/actions/runs/38512005402), [Ubuntu AppImage 빌드·Xvfb 샘플 실행](https://github.com/ingjae/haru/actions/runs/38513958682) |
+| [v0.0.2](https://github.com/ingjae/haru/releases/tag/v0.0.2) | ✅ **PASS** · arm64 패키지 실행 | — Linux 배포 없음 | ✅ [CI](https://github.com/ingjae/haru/actions/runs/38379026435) |
+| [v0.0.1](https://github.com/ingjae/haru/releases/tag/v0.0.1) | ✅ **PASS** · arm64 패키지 실행 | — Linux 배포 없음 | 로컬 테스트·DMG 무결성 확인 |
+
+실제 Google 일정·할일 **조회**는 현재 MacBook의 개발 실행에서 확인했습니다. 실제 계정의 생성·수정·삭제 전체 흐름과 Linux Google 연결은 아직 미검증입니다. Ubuntu의 Xvfb 실행은 **CI 가상 화면 검증**이며 Linux 실기기 PASS로 계산하지 않습니다. [상세 검증 범위](docs/USAGE.md#지원-범위와-검증)
+
 ## 시작하기
 
 1. 플랫폼에 맞게 [설치](docs/INSTALL.md)합니다. 연결 전에는 샘플 일정이 표시됩니다.

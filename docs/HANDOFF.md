@@ -242,3 +242,7 @@ Linux AppImage 워크플로 38513958682가 성공했다. Ubuntu 24.04 x86_64에�
 ## README 최신 제품 사양 정리 — 2026-10-14
 
 사용자가 실패 run 확인과 README 간소화를 요청했다. 이전 Linux AppImage run 38513823007은 x64/x86_64 파일명 불일치였으며 수정 후 run 38513958682 및 후속 CI는 성공했다. README를 macOS/Linux 제품 소개·기능·다운로드·시작하기로 정리하고 오래된 hero/GIF/스크린샷·버전 설명을 전면에서 제거했다. 상세 설치는 docs/INSTALL.md 및 LINUX.md, 사용법·제한·검증은 docs/USAGE.md, 영상은 docs/MEDIA.md, 소스 실행·빌드는 CONTRIBUTING.md로 분리했다. GOOGLE_SETUP.md를 캘린더 목록·Tasks 추가 권한 및 Linux 키링 기준으로 갱신했다. 7개 문서의 내부 링크 36개와 앵커 검사 통과. 앱 코드는 변경하지 않았다.
+
+## 버전별 실기기 검증 표시 — 2026-10-14
+
+사용자 요청으로 README에 v0.0.1/2/3의 현재 Apple Silicon MacBook 패키지 실행 PASS와 CI 링크를 추가했다. 실기기는 이 MacBook 한 대뿐이며 Linux 실기기는 NOT TESTED로 표시했다. Ubuntu Xvfb CI와 실기기 검증을 구분하고, 패키지 실행 PASS가 전체 기능·실제 Google 쓰기 검증을 뜻하지 않는다고 명시했다. 개발 실행에서 Google 조회를 확인한 범위도 별도 표시했다.
