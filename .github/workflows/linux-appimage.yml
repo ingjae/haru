@@ -28,7 +28,7 @@ jobs:
       - name: Install runtime and display dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y libfuse2t64 libgtk-3-0t64 libnss3 libasound2t64 libgbm1 libsecret-1-0 xvfb dbus-x11
+          sudo apt-get install -y libfuse2t64 libgtk-3-0t64 libnss3 libasound2t64 libgbm1 libsecret-1-0 fonts-noto-cjk xvfb dbus-x11
       - run: npm ci
       - run: npm test
       - run: npm run package:linux -- --publish never
