@@ -234,3 +234,7 @@ Mac 샘플 앱에서 밝은 패널·설정, 어두운 패널·설정을 캡처�
 ## Linux AppImage 추가 작업 — 2026-10-14
 
 사용자가 Ubuntu 24.04 AppImage를 기존 릴리즈에 추가하도록 요청했다. package:linux, Ubuntu 24.04 x86_64 빌드/샘플 smoke/릴리즈 업로드 워크플로를 추가했다. macOS native extraResources는 mac 타깃으로 옮겼다. Linux에 메뉴바 타임라인·AX 창 보정 항목을 숨기고 트레이 PNG, 명시적 클릭 확장 시 focus/blur 접기 경로를 넣었다. GNOME Keyring 없이 basic_text backend로 Google 인증을 저장하는 것을 막았다. macOS 기존 DMG와 v0.0.3 태그는 유지하며 Linux 보완 main 소스로 빌드한다.
+
+## Ubuntu 24.04 AppImage 릴리즈 검증
+
+Linux AppImage 워크플로 38513958682가 성공했다. Ubuntu 24.04 x86_64에서 테스트 30개, 빌드 및 sandbox 유지(Xvfb + 추출본 root 소유 chrome-sandbox) 실행을 확인했다. 로그 LINUX_SMOKE_OK는 v0.0.3, 이벤트 5개, 오늘 완료 샘플 할일 1개를 보고했다. 기존 v0.0.3 릴리즈에 Haru-0.0.3-x86_64.AppImage와 SHA256SUMS-linux.txt를 추가했다. Mac DMG와 태그는 변경하지 않았다. Linux 바이너리는 bb2e0e9 소스로 빌드했고, 실제 GNOME/Wayland/Google OAuth는 미검증이다. Ubuntu AppArmor 제한의 경우 고정 경로에서 root 소유 sandbox helper를 설치하는 절차를 docs/LINUX.md에 적었다. 전역 보안 정책을 끄거나 --no-sandbox 실행을 권장하지 않는다.

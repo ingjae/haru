@@ -17,7 +17,21 @@ chmod +x Haru-0.0.3-x86_64.AppImage
 
 Wayland에서는 앱의 화면 위치 지정·항상 위 요청이 제한될 수 있으므로 화면 가장자리 배치에는 로그인 화면에서 **Ubuntu on Xorg** 세션을 선택하는 것을 권장합니다.
 
-Ubuntu 24.04의 AppArmor 정책으로 Chromium sandbox가 거부되면 시스템 보호를 끄거나 `--no-sandbox`로 실행하지 마세요. 설치 경로를 지정한 AppArmor 정책 또는 관리자가 설치한 sandbox helper가 필요할 수 있습니다. 데스크톱 실행 환경에 따라 추가 설정이 필요하며 CI의 가상 디스플레이 검증이 이 동작을 보장하지는 않습니다.
+Ubuntu 24.04의 AppArmor 정책으로 Chromium sandbox가 거부되면 시스템 보호를 끄거나 `--no-sandbox`로 실행하지 마세요. 관리자가 설치한 sandbox helper가 필요할 수 있습니다. 이 경우 다음처럼 검증한 AppImage를 고정 경로에 설치할 수 있습니다. 설치 전 체크섬을 먼저 확인하세요.
+
+```sh
+./Haru-0.0.3-x86_64.AppImage --appimage-extract
+sudo install -d -m 755 /opt/haru-0.0.3
+sudo cp -a squashfs-root/. /opt/haru-0.0.3/
+sudo chown -R root:root /opt/haru-0.0.3
+sudo chmod -R go-w /opt/haru-0.0.3
+sudo chmod 4755 /opt/haru-0.0.3/chrome-sandbox
+/opt/haru-0.0.3/haru
+```
+
+이 설치는 Chromium의 SUID sandbox helper를 root 소유로 구성합니다. CI도 AppImage를 추출한 후 이 helper 방식으로 실행했고, Chromium sandbox를 비활성화하지 않았습니다. 설치 디렉터리를 일반 사용자에게 쓰기 가능하게 변경하지 마세요. [Ubuntu 24.04의 user namespace 정책](https://documentation.ubuntu.com/release-notes/24.04/)과 [Electron Linux 저장소 설명](https://www.electronjs.org/docs/latest/api/safe-storage)을 참고하세요.
+
+ 데스크톱 실행 환경에 따라 추가 설정이 필요하며 CI의 가상 디스플레이 검증이 이 동작을 보장하지는 않습니다.
 
 빌드:
 
