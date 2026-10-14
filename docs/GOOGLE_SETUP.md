@@ -24,10 +24,16 @@ Haru는 현재 사용자가 준비한 데스크톱 OAuth 클라이언트로 Goog
 | invalid_grant / 인증 만료 | 앱에서 연결 해제 후 다시 로그인합니다. 테스트 모드의 인증은 만료될 수 있습니다. |
 | 브라우저에 응답 완료 문구만 보임 | 앱에서 일정 조회까지 성공했는지 확인합니다. 콜백 응답과 조회 성공은 다릅니다. |
 
-처음에는 기본 캘린더의 오늘 일정만 표시합니다. 다른 캘린더의 일정이 없다면 실패가 아니라 현재 지원 범위일 수 있습니다.
+## 캘린더 목록과 Google 할일
+
+기본 연결은 Calendar 일정 권한으로 시작합니다. **⚙ 설정 → 캘린더 목록·Google 할일 권한 연결**에서 추가 로그인을 진행하고, **캘린더 목록 조회**와 **할일 생성·수정·삭제**를 모두 선택합니다. 기존 연결이 있으면 저장된 OAuth 클라이언트를 재사용합니다.
+
+같은 Google Cloud 프로젝트에서 **Google Tasks API**도 활성화해야 합니다. 추가 권한 승인과 API 활성화는 별개입니다. 연결 후 캘린더와 할일 목록을 선택할 수 있습니다. Google 웹에서 보고 있는 계정과 Haru 연결 계정이 같은지 확인하세요.
+
+할일 조회가 403이면 Tasks API 활성화, 추가 권한 선택, 조직 접근 정책을 확인합니다. Linux에서는 잠금 해제된 GNOME Keyring이 필요하며 보호되지 않은 basic_text 저장소는 사용하지 않습니다. [Linux 설치](LINUX.md)
 
 ## 연결 해제
 
-앱의 연결 해제는 이 Mac의 저장 인증을 삭제합니다. Google 쪽 접근 권한은 [Google 계정 연결 관리](https://myaccount.google.com/connections)에서 별도로 취소할 수 있습니다.
+앱의 연결 해제는 이 기기의 저장 인증을 삭제합니다. Google 쪽 접근 권한은 [Google 계정 연결 관리](https://myaccount.google.com/connections)에서 별도로 취소할 수 있습니다.
 
 참고: [Google Desktop OAuth](https://developers.google.com/identity/protocols/oauth2/native-app), [Calendar API 빠른 시작](https://developers.google.com/workspace/calendar/api/quickstart/python).

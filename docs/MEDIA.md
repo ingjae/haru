@@ -34,3 +34,17 @@ python3 scripts/render-product-media.py
 macOS의 Arial 폰트와 `ffmpeg`가 필요합니다. 스크립트는 로고·제품 소개 이미지·카드 크롭·MP4·GIF를 생성합니다. 앱의 네트워크 통신이나 Google 계정에 접근하지 않습니다.
 
 코드로 그린 로고는 레일·일정·현재 시간 표시를 표현합니다. 전체 미디어는 이 저장소의 MIT 라이선스로 제공됩니다.
+
+## 사용 예시 영상
+
+기존 안내 영상은 이전 디자인(v0.0.2)의 샘플 화면을 단계별로 보여 줍니다. 최신 기능·디자인은 README와 사용법을 기준으로 보세요.
+
+| 영상 | 흐름 |
+| --- | --- |
+| [레일 펼치기·접기 — MP4](assets/videos/01-ribbon.mp4) | 레일 → 클릭 확장 → 복귀 |
+| [일정 확인·수정 — MP4](assets/videos/02-event-edit.mp4) | 샘플 일정 → 제목 수정 → 저장 |
+| [화면 꾸미기 — MP4](assets/videos/03-appearance.mp4) | 설정 → 배경·투명도 → 축소 |
+
+![레일 사용 예시 — 이전 디자인](assets/walkthrough.gif)
+
+새 macOS 디자인: [밝은·어두운 화면](assets/redesign-preview.png). 생성·할일 화면: [샘플](assets/screenshots/create-and-tasks.png). 패키지 설정 버전: [v0.0.3](assets/screenshots/v0.0.3-settings.png).

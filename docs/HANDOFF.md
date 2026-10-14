@@ -238,3 +238,7 @@ Mac 샘플 앱에서 밝은 패널·설정, 어두운 패널·설정을 캡처�
 ## Ubuntu 24.04 AppImage 릴리즈 검증
 
 Linux AppImage 워크플로 38513958682가 성공했다. Ubuntu 24.04 x86_64에서 테스트 30개, 빌드 및 sandbox 유지(Xvfb + 추출본 root 소유 chrome-sandbox) 실행을 확인했다. 로그 LINUX_SMOKE_OK는 v0.0.3, 이벤트 5개, 오늘 완료 샘플 할일 1개를 보고했다. 기존 v0.0.3 릴리즈에 Haru-0.0.3-x86_64.AppImage와 SHA256SUMS-linux.txt를 추가했다. Mac DMG와 태그는 변경하지 않았다. Linux 바이너리는 bb2e0e9 소스로 빌드했고, 실제 GNOME/Wayland/Google OAuth는 미검증이다. Ubuntu AppArmor 제한의 경우 고정 경로에서 root 소유 sandbox helper를 설치하는 절차를 docs/LINUX.md에 적었다. 전역 보안 정책을 끄거나 --no-sandbox 실행을 권장하지 않는다.
+
+## README 최신 제품 사양 정리 — 2026-10-14
+
+사용자가 실패 run 확인과 README 간소화를 요청했다. 이전 Linux AppImage run 38513823007은 x64/x86_64 파일명 불일치였으며 수정 후 run 38513958682 및 후속 CI는 성공했다. README를 macOS/Linux 제품 소개·기능·다운로드·시작하기로 정리하고 오래된 hero/GIF/스크린샷·버전 설명을 전면에서 제거했다. 상세 설치는 docs/INSTALL.md 및 LINUX.md, 사용법·제한·검증은 docs/USAGE.md, 영상은 docs/MEDIA.md, 소스 실행·빌드는 CONTRIBUTING.md로 분리했다. GOOGLE_SETUP.md를 캘린더 목록·Tasks 추가 권한 및 Linux 키링 기준으로 갱신했다. 7개 문서의 내부 링크 36개와 앵커 검사 통과. 앱 코드는 변경하지 않았다.
