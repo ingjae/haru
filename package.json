@@ -15,7 +15,8 @@
     "predev": "npm run build:native",
     "prepackage:mac": "npm run build:native",
     "demo": "electron . --demo",
-    "predemo": "npm run build:native"
+    "predemo": "npm run build:native",
+    "package:linux": "electron-builder --linux AppImage --x64"
   },
   "devDependencies": {
     "electron": "^39.0.0",
@@ -34,14 +35,23 @@
         "dmg"
       ],
       "category": "public.app-category.productivity",
-      "icon": "desktop/assets/haru.icns"
+      "icon": "desktop/assets/haru.icns",
+      "extraResources": [
+        {
+          "from": "desktop/bin/haru-layout",
+          "to": "haru-layout"
+        }
+      ]
     },
-    "extraResources": [
-      {
-        "from": "desktop/bin/haru-layout",
-        "to": "haru-layout"
-      }
-    ]
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "category": "Office",
+      "icon": "desktop/assets/haru.png",
+      "artifactName": "Haru-${version}-${arch}.AppImage",
+      "executableName": "haru"
+    }
   },
   "engines": {
     "node": ">=20"

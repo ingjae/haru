@@ -9,6 +9,7 @@ const {parseMouseDown,shouldDismiss,menuBarPanelBounds}=require('./widget-dismis
 const {createGoogleService}=require('./google-service.cjs');
 const {WIDTHS,menuBarWidth}=require('./menubar-layout.cjs');
 const RAIL_WIDTH=24;
+const positionModes=process.platform==='darwin'?['window','left','right','top','menubar','statusbar']:['window','left','right','top'];
 const demoMode=process.argv.includes('--demo');
 if(demoMode&&process.argv.includes('--dark'))nativeTheme.themeSource='dark';
 if(demoMode)app.setPath('userData',path.join(app.getPath('temp'),'haru-product-demo'));
@@ -34,6 +35,7 @@ function startLayout(prompt=false){
 let trayDefault,marker,win,tray,origin,server,token=null,mode='window',alertEnabled=false,timers=[],loginPending=false;
 let preferences={mode:'left',pinned:true,notifications:false,reserveSpace:false,opacity:1,railBackground:true,showEvents:true,showTasks:true,collapsedTitles:demoMode,timelineStart:540,timelineEnd:1260,menuBarWidth:180};
 let expanded=false,toastUntil=0,expansionTimer,editing=false,manualExpanded=false,lastOpenAt=0,menuBarAnchor=null;
+function secureStorage(){return safeStorage.isEncryptionAvailable()&&(process.platform!=='linux'||safeStorage.getSelectedStorageBackend()!=='basic_text');}
 function activateForInteraction(){win.setFocusable(true);win.show();win.focus();}
 function resolvedMenuBarWidth(){
   const b=tray?.getBounds(),d=b&&b.width>0?screen.getDisplayMatching(b):screen.getDisplayMatching(win.getBounds()),area=d.bounds;
@@ -42,19 +44,20 @@ function resolvedMenuBarWidth(){
   const effective=stable?b:menuBarAnchor?.displayId===d.id?{x:menuBarAnchor.right-1,width:1}:null;
   return menuBarWidth(preferences.menuBarWidth,d,effective);
 }
-function widgetState(){return {edge:['left','right'].includes(mode),expanded,side:mode,showEvents:preferences.showEvents!==false,showTasks:preferences.showTasks!==false,railBackground:!!preferences.railBackground,collapsedTitles:!!preferences.collapsedTitles,timelineStart:preferences.timelineStart,timelineEnd:preferences.timelineEnd,menuBar:mode==='statusbar',menuBarWidth:preferences.menuBarWidth,menuBarWidthPixels:resolvedMenuBarWidth()};}
+function widgetState(){return {edge:['left','right'].includes(mode),expanded,side:mode,platform:process.platform,showEvents:preferences.showEvents!==false,showTasks:preferences.showTasks!==false,railBackground:!!preferences.railBackground,collapsedTitles:!!preferences.collapsedTitles,timelineStart:preferences.timelineStart,timelineEnd:preferences.timelineEnd,menuBar:mode==='statusbar',menuBarWidth:preferences.menuBarWidth,menuBarWidthPixels:resolvedMenuBarWidth()};}
 function windowMaterial(){if(process.platform==='darwin')win.setVibrancy(['left','right'].includes(mode)&&!expanded?null:'popover');}
 function setExpansion(value){
   if(!['left','right'].includes(mode)||expanded===value)return;expanded=value;marker?.hide();windowMaterial();
   const area=screen.getDisplayMatching(win.getBounds()).workArea,width=Math.min(value?420:RAIL_WIDTH,area.width);
   win.setBounds({x:mode==='left'?area.x:area.x+area.width-width,y:area.y,width,height:area.height});
   win.webContents.send('widget-state',widgetState());
+  if(process.platform==='linux'&&value&&manualExpanded)activateForInteraction();
 }
 const preferencesPath=()=>path.join(app.getPath('userData'),'preferences.json');
 function savePreferences(){return fs.writeFile(preferencesPath(),JSON.stringify(preferences),{mode:0o600});}
 const tokenPath=()=>path.join(app.getPath('userData'),'google-session.enc');
 function external(url){const u=new URL(url);if(u.protocol!=='https:')throw Error('HTTPS 링크만 열 수 있습니다.');return shell.openExternal(u.href);}
-async function persist(){if(!safeStorage.isEncryptionAvailable())throw Error('시스템 암호화 저장소를 사용할 수 없습니다.');await fs.writeFile(tokenPath(),safeStorage.encryptString(JSON.stringify(token)),{mode:0o600});}
+async function persist(){if(!secureStorage())throw Error('시스템 암호화 저장소를 사용할 수 없습니다. Linux에서는 GNOME Keyring을 설치하고 잠금을 해제해 주세요.');await fs.writeFile(tokenPath(),safeStorage.encryptString(JSON.stringify(token)),{mode:0o600});}
 async function credential(){
   let file=process.env.GOOGLE_OAUTH_CREDENTIALS;
   if(!file){const result=await dialog.showOpenDialog(win,{title:'Google Desktop OAuth 클라이언트 JSON 선택',properties:['openFile'],filters:[{name:'JSON',extensions:['json']}]});if(result.canceled)throw Error('Google 연결이 취소되었습니다.');file=result.filePaths[0];}
@@ -67,6 +70,7 @@ async function exchange(params){
 }
 async function connect(extra=false){
   if(demoMode)throw Error('데모 모드입니다. 실제 Google 연결은 일반 실행에서 사용할 수 있습니다.');
+  if(!secureStorage())throw Error('Google 연결에는 잠금 해제된 시스템 키링이 필요합니다. Linux에서는 GNOME Keyring을 확인해 주세요.');
   if(loginPending)throw Error('이미 Google 로그인이 진행 중입니다.');loginPending=true;
   try{
     const credentials=token?{client_id:token.client_id,client_secret:token.client_secret}:await credential();const state=crypto.randomBytes(32).toString('hex'),verifier=crypto.randomBytes(32).toString('base64url');
@@ -91,7 +95,7 @@ async function access(){
 }
 const google=createGoogleService(access);
 function position(next){
-  if(!['window','left','right','top','menubar','statusbar'].includes(next))return;marker?.hide();manualExpanded=false;mode=next;preferences.mode=next;savePreferences().catch(()=>{});
+  if(!positionModes.includes(next))return;marker?.hide();manualExpanded=false;mode=next;preferences.mode=next;savePreferences().catch(()=>{});
   const area=screen.getDisplayMatching(win.getBounds()).workArea;
   expanded=false;const width=Math.min(['left','right'].includes(next)?RAIL_WIDTH:420,area.width),height=Math.min(660,area.height);
   const bounds=next==='left'?{x:area.x,y:area.y,width,height:area.height}:next==='right'?{x:area.x+area.width-width,y:area.y,width,height:area.height}:next==='top'?{x:area.x,y:area.y,width:area.width,height:Math.min(360,area.height)}:['menubar','statusbar'].includes(next)?{x:area.x+area.width-width,y:area.y,width,height}:{x:area.x+Math.round((area.width-Math.min(1100,area.width))/2),y:area.y+40,width:Math.min(1100,area.width),height:Math.min(800,area.height-40)};
@@ -116,6 +120,8 @@ function schedule(events){
 }
 if(!app.requestSingleInstanceLock()){app.quit();}else app.whenReady().then(async()=>{
   try{preferences={...preferences,...JSON.parse(await fs.readFile(preferencesPath(),'utf8'))};}catch{}
+  if(!positionModes.includes(preferences.mode))preferences.mode='left';
+  if(process.platform!=='darwin')preferences.reserveSpace=false;
   if(!WIDTHS.includes(preferences.menuBarWidth))preferences.menuBarWidth=180;
   if(process.argv.includes('--max-menubar')){preferences.menuBarWidth=0;preferences.mode='statusbar';await savePreferences();}
   const {timelineRange}=await import('../public/calendar.js');
@@ -123,7 +129,7 @@ if(!app.requestSingleInstanceLock()){app.quit();}else app.whenReady().then(async
   if(process.argv.includes('--reserve-space')){preferences.reserveSpace=true;await savePreferences();}
   if(process.platform==='darwin')app.dock.setIcon(nativeImage.createFromPath(path.join(__dirname,'assets/haru.png')));
   alertEnabled=!!preferences.notifications;
-  try{if(!demoMode&&safeStorage.isEncryptionAvailable())token=JSON.parse(safeStorage.decryptString(await fs.readFile(tokenPath())));}catch{}
+  try{if(!demoMode&&secureStorage())token=JSON.parse(safeStorage.decryptString(await fs.readFile(tokenPath())));}catch{}
   server=http.createServer(async(req,res)=>{const files={'/menubar.js':'menubar.js','/':'index.html','/app.js':'app.js','/calendar.js':'calendar.js','/style.css':'style.css'};const file=files[req.url];if(!file){res.writeHead(404);res.end();return;}try{const body=await fs.readFile(path.join(__dirname,'../public',file));res.setHeader('Content-Type',file.endsWith('.js')?'text/javascript':file.endsWith('.css')?'text/css':'text/html; charset=utf-8');res.setHeader('Content-Security-Policy',"default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'none'");res.end(body);}catch{res.writeHead(500);res.end();}});
   await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));origin=`http://127.0.0.1:${server.address().port}`;
   win=new BrowserWindow({width:RAIL_WIDTH,height:800,minWidth:RAIL_WIDTH,minHeight:280,show:false,focusable:false,acceptFirstMouse:true,type:process.platform==='darwin'?'panel':undefined,frame:false,hasShadow:false,roundedCorners:false,skipTaskbar:true,title:'Haru · 오늘의 타임라인',transparent:true,backgroundColor:'#00000000',alwaysOnTop:true,webPreferences:{preload:path.join(__dirname,'preload.cjs'),contextIsolation:true,nodeIntegration:false,sandbox:true}});
@@ -133,17 +139,18 @@ if(!app.requestSingleInstanceLock()){app.quit();}else app.whenReady().then(async
   await marker.loadFile(path.join(__dirname,'time-pointer.html'));
   if(process.platform==='darwin')win.setVisibleOnAllWorkspaces(true,{visibleOnFullScreen:true});
   win.webContents.setWindowOpenHandler(({url})=>{external(url).catch(()=>{});return{action:'deny'};});win.webContents.on('will-navigate',(event,url)=>{if(new URL(url).origin!==origin)event.preventDefault();});
+  if(process.platform==='linux')win.on('blur',()=>{if(!editing&&expanded){manualExpanded=false;toastUntil=0;setExpansion(false);win.setFocusable(false);}});
   win.on('close',event=>{if(!app.quitting){event.preventDefault();win.showInactive();}});
-  const icon=trayDefault=nativeImage.createFromDataURL('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScLbtAAAAABJRU5ErkJggg==');
+  const icon=trayDefault=process.platform==='linux'?nativeImage.createFromPath(path.join(__dirname,'assets/haru.png')).resize({width:24,height:24}):nativeImage.createFromDataURL('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScLbtAAAAABJRU5ErkJggg==');
   tray=new Tray(icon);tray.setTitle('◷');tray.setToolTip('Haru · 오늘의 일정');tray.on('click',popover);
-  const menu=Menu.buildFromTemplate([...['window','left','right','top','menubar','statusbar'].map((p,i)=>({label:['일반 창','왼쪽에 붙이기','오른쪽에 붙이기','위쪽에 붙이기','메뉴바 아래 패널','시스템 메뉴바 타임라인'][i],click:()=>position(p)})),{type:'separator'},{label:'Google 캘린더 열기',click:()=>external('https://calendar.google.com/calendar/u/0/r').catch(()=>{})},{label:'Google 캘린더 연결…',click:()=>{setExpansion(true);activateForInteraction();win.webContents.send('google-setup');}},{label:'종료',click:()=>app.quit()}]);tray.on('right-click',()=>tray.popUpContextMenu(menu));
+  const menu=Menu.buildFromTemplate([...positionModes.map((p,i)=>({label:['일반 창','왼쪽에 붙이기','오른쪽에 붙이기','위쪽에 붙이기','메뉴바 아래 패널','시스템 메뉴바 타임라인'][i],click:()=>position(p)})),{type:'separator'},{label:'Google 캘린더 열기',click:()=>external('https://calendar.google.com/calendar/u/0/r').catch(()=>{})},{label:'Google 캘린더 연결…',click:()=>{setExpansion(true);activateForInteraction();win.webContents.send('google-setup');}},{label:'종료',click:()=>app.quit()}]);tray.on('right-click',()=>tray.popUpContextMenu(menu));
   function handle(name,fn){ipcMain.handle(name,(event,...args)=>{if(event.sender!==win.webContents || new URL(event.senderFrame.url).origin!==origin)throw Error('Unauthorized');return fn(...args);});}
   handle('collapsed-titles',async value=>{if(typeof value!=='boolean')throw Error('제목 표시 설정을 확인해 주세요.');preferences.collapsedTitles=value;await savePreferences();win.webContents.send('widget-state',widgetState());return value;});
   handle('menubar-metrics',()=>({width:resolvedMenuBarWidth()}));
   handle('menubar-width',async value=>{if(!WIDTHS.includes(value))throw Error('메뉴바 폭을 확인해 주세요.');preferences.menuBarWidth=value;await savePreferences();win.webContents.send('widget-state',widgetState());});
   handle('menubar-image',(dataURL,tooltip)=>{if(mode!=='statusbar')return;if(typeof dataURL!=='string'||!dataURL.startsWith('data:image/png;base64,')||dataURL.length>100000)throw Error('잘못된 메뉴바 이미지입니다.');const icon=nativeImage.createEmpty();icon.addRepresentation({scaleFactor:2,dataURL});const size=icon.getSize();if(icon.isEmpty()||!Number.isInteger(size.width)||size.width<120||size.width>2000||size.height!==22)throw Error('잘못된 메뉴바 이미지 크기입니다.');tray.setImage(icon);tray.setTitle('');tray.setToolTip(typeof tooltip==='string'?tooltip.slice(0,1000):'Haru');if(process.env.HARU_DEBUG_WIDGET==='1'){fs.writeFile(path.join(app.getPath('temp'),'haru-menubar-preview.png'),icon.toPNG({scaleFactor:2})).catch(()=>{});console.info('menubar',JSON.stringify({image:size,bounds:tray.getBounds(),visiblePanel:win.isVisible()}));}});
   handle('time-pointer',y=>{if(expanded||!['left','right'].includes(mode)||typeof y!=='number'||!Number.isFinite(y)){marker.hide();return;}const b=win.getBounds(),area=screen.getDisplayMatching(b).bounds;if(y<0||y>b.height){marker.hide();return;}marker.setBounds({x:Math.max(area.x,b.x-20),y:Math.round(b.y+y-13),width:20,height:26});marker.showInactive();if(process.env.HARU_DEBUG_WIDGET==='1')console.info('time-pointer',JSON.stringify({rail:b,pointer:marker.getBounds(),visible:marker.isVisible(),focusable:marker.isFocusable(),focused:marker.isFocused(),reservedWidth:RAIL_WIDTH}));});
-  handle('status',()=>({version:app.getVersion(),connected:!!token,extended:!!token?.extended,...widgetState(),pinned:!!preferences.pinned,reserveSpace:!!preferences.reserveSpace,layoutTrusted,opacity:preferences.opacity}));handle('connect',()=>connect());handle('connect-extended',()=>connect(true));
+  handle('status',()=>({version:app.getVersion(),platform:process.platform,connected:!!token,extended:!!token?.extended,...widgetState(),pinned:!!preferences.pinned,reserveSpace:!!preferences.reserveSpace,layoutTrusted,opacity:preferences.opacity}));handle('connect',()=>connect());handle('connect-extended',()=>connect(true));
   handle('disconnect',async()=>{token=null;timers.forEach(clearTimeout);timers=[];await fs.rm(tokenPath(),{force:true});});
   handle('calendars',()=>google.calendars());
   handle('events',async(start,end,calendarId='primary')=>{if(!Number.isFinite(Date.parse(start))||!Number.isFinite(Date.parse(end))||Date.parse(end)<=Date.parse(start))throw Error('잘못된 날짜입니다.');return google.events(calendarId,start,end);});
@@ -169,6 +176,7 @@ if(!app.requestSingleInstanceLock()){app.quit();}else app.whenReady().then(async
   preferences.opacity=typeof preferences.opacity==='number'&&Number.isFinite(preferences.opacity)?Math.max(.35,Math.min(1,preferences.opacity)):1;
   marker.setOpacity(preferences.opacity);marker.setAlwaysOnTop(!!preferences.pinned);win.setOpacity(preferences.opacity);win.setAlwaysOnTop(!!preferences.pinned);position(preferences.mode);
   startLayout(process.argv.includes('--reserve-space'));
+  if(demoMode&&process.argv.includes('--smoke-test')){editing=true;setExpansion(true);try{await require('./linux-smoke.cjs').run(win);app.quit();}catch(error){console.error(error.message);app.exit(1);}return;}
   if(process.argv.includes('--show-panel'))setTimeout(()=>{if(demoMode)editing=true;if(mode==='statusbar')popover();else{manualExpanded=true;setExpansion(true);}},500);
   if(process.argv.includes('--google-setup'))win.webContents.send('google-setup');
   screen.on('display-metrics-changed',()=>{position(mode);sendLayout();});

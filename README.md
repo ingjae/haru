@@ -85,6 +85,10 @@ npm run package:mac # Mac DMG 생성
 
 데모 모드는 실제 Google 연결을 허용하지 않으며, 샘플 일정 변경은 재시작 시 초기화됩니다.
 
+## Linux · Ubuntu 24.04
+
+x86_64 AppImage를 제공합니다. [설치·지원 범위](docs/LINUX.md)를 확인하세요. macOS 메뉴바 타임라인과 창 공간 확보는 Linux에서 지원하지 않습니다.
+
 ## Google Calendar 연결
 
 **⚙ 설정 → Google 캘린더 → Google 캘린더 연결**에서 데스크톱 OAuth JSON을 선택하고 시스템 브라우저로 로그인합니다. Chrome에 로그인되어 있는 것만으로 연결되지는 않습니다.

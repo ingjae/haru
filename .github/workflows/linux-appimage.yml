@@ -1,0 +1,57 @@
+name: Linux AppImage
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Existing release to receive the Ubuntu 24.04 x86_64 AppImage
+        required: true
+        default: v0.0.3
+permissions:
+  contents: write
+jobs:
+  appimage:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Check release and source version
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ inputs.release_tag }}
+        run: |
+          test "$RELEASE_TAG" = "v$(node -p 'require("./package.json").version')"
+          gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY"
+      - name: Install runtime and display dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libfuse2t64 libgtk-3-0t64 libnss3 libasound2t64 libgbm1 libsecret-1-0 xvfb dbus-x11
+      - run: npm ci
+      - run: npm test
+      - run: npm run package:linux -- --publish never
+      - name: Smoke test the packaged app without disabling Chromium sandbox
+        run: |
+          chmod +x dist/Haru-*-x64.AppImage
+          dist/Haru-*-x64.AppImage --appimage-extract > /dev/null
+          sudo chown root:root squashfs-root/chrome-sandbox
+          sudo chmod 4755 squashfs-root/chrome-sandbox
+          HARU_SMOKE_SCREENSHOT="$PWD/dist/linux-smoke.png" dbus-run-session -- xvfb-run -a timeout 60 squashfs-root/haru --demo --smoke-test
+      - name: Checksum
+        run: |
+          cd dist
+          sha256sum Haru-*-x64.AppImage > SHA256SUMS-linux.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ubuntu-24.04-appimage
+          path: |
+            dist/*.AppImage
+            dist/SHA256SUMS-linux.txt
+            dist/linux-smoke.png
+      - name: Add AppImage to the existing release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ inputs.release_tag }}
+        run: gh release upload "$RELEASE_TAG" dist/*.AppImage dist/SHA256SUMS-linux.txt --repo "$GITHUB_REPOSITORY"

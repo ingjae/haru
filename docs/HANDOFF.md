@@ -230,3 +230,7 @@ Mac 샘플 앱에서 밝은 패널·설정, 어두운 패널·설정을 캡처�
 ## v0.0.3 릴리즈 검증 — 2026-10-14
 
 누적 미출시 변경을 0.0.3으로 묶었다. 테스트 30개, 모든 새 JavaScript 모듈 문법 검사, 비밀 값 패턴 검사, diff 공백 검사 통과. arm64 DMG 빌드 및 hdiutil verify 통과. dist/mac-arm64/Haru.app을 Mac 샘플 모드로 실행하여 타임라인·새 제어 버튼·설정의 v0.0.3 표시를 확인했다. 설정 화면은 docs/assets/screenshots/v0.0.3-settings.png에 샘플로 저장했다. 서명·공증되지 않은 개발 패키지이며 실제 Google 쓰기 전체 흐름은 아직 검증하지 않았다.
+
+## Linux AppImage 추가 작업 — 2026-10-14
+
+사용자가 Ubuntu 24.04 AppImage를 기존 릴리즈에 추가하도록 요청했다. package:linux, Ubuntu 24.04 x86_64 빌드/샘플 smoke/릴리즈 업로드 워크플로를 추가했다. macOS native extraResources는 mac 타깃으로 옮겼다. Linux에 메뉴바 타임라인·AX 창 보정 항목을 숨기고 트레이 PNG, 명시적 클릭 확장 시 focus/blur 접기 경로를 넣었다. GNOME Keyring 없이 basic_text backend로 Google 인증을 저장하는 것을 막았다. macOS 기존 DMG와 v0.0.3 태그는 유지하며 Linux 보완 main 소스로 빌드한다.
