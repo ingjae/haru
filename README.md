@@ -32,8 +32,8 @@ Haru는 **24px 레일**로 오늘의 일정 분포와 현재 시간을 계속 �
 
 | 플랫폼 | 배포 파일 | 설치 안내 |
 | --- | --- | --- |
-| macOS · Apple Silicon | [Haru-0.0.4-arm64.dmg](https://github.com/ingjae/haru/releases/download/v0.0.4/Haru-0.0.4-arm64.dmg) | [Mac 설치](docs/INSTALL.md#macos--apple-silicon) |
-| Ubuntu 24.04 · x86_64 | [Haru-0.0.4-x86_64.AppImage](https://github.com/ingjae/haru/releases/download/v0.0.4/Haru-0.0.4-x86_64.AppImage) | [Linux 설치](docs/LINUX.md) |
+| macOS · Apple Silicon | [Haru-0.0.5-arm64.dmg](https://github.com/ingjae/haru/releases/download/v0.0.5/Haru-0.0.5-arm64.dmg) | [Mac 설치](docs/INSTALL.md#macos--apple-silicon) |
+| Ubuntu 24.04 · x86_64 | [Haru-0.0.5-x86_64.AppImage](https://github.com/ingjae/haru/releases/download/v0.0.5/Haru-0.0.5-x86_64.AppImage) | [Linux 설치](docs/LINUX.md) |
 
 [릴리즈와 체크섬](https://github.com/ingjae/haru/releases/latest) · Mac 패키지는 서명·공증하지 않은 개발 버전입니다. Linux의 화면 배치는 데스크톱 환경에 따라 제한될 수 있습니다. 긴 시스템 메뉴바 타임라인과 다른 앱의 창 공간 보정은 macOS 전용입니다.
 
@@ -49,6 +49,7 @@ Haru는 **24px 레일**로 오늘의 일정 분포와 현재 시간을 계속 �
 
 | 버전 | 현재 MacBook · 실기기 | Ubuntu 24.04 · 실기기 | 자동 검증 |
 | --- | --- | --- | --- |
+| [v0.0.5](https://github.com/ingjae/haru/releases/tag/v0.0.5) | ✅ **PASS** · 현재 MacBook 패키지 실행·설정 v0.0.5 표시 | ⬜ **NOT TESTED** | ✅ [Mac/Linux CI](https://github.com/ingjae/haru/actions/runs/38681266783), [AppImage·축소 레일 공백 회귀 검증](https://github.com/ingjae/haru/actions/runs/38681266405) |
 | [v0.0.4](https://github.com/ingjae/haru/releases/tag/v0.0.4) | ✅ **PASS** · 현재 MacBook arm64 패키지 실행·설정 버전 표시 | ⬜ **NOT TESTED** | ✅ [Mac/Linux CI](https://github.com/ingjae/haru/actions/runs/38558357427), [Ubuntu AppImage·Xvfb 실행](https://github.com/ingjae/haru/actions/runs/38558357336) |
 | [v0.0.3](https://github.com/ingjae/haru/releases/tag/v0.0.3) | ✅ **PASS** · arm64 패키지 실행·화면·버전 표시 | ⬜ **NOT TESTED** | ✅ [Mac/Linux CI](https://github.com/ingjae/haru/actions/runs/38512005402), [Ubuntu AppImage 빌드·Xvfb 샘플 실행](https://github.com/ingjae/haru/actions/runs/38513958682) |
 | [v0.0.2](https://github.com/ingjae/haru/releases/tag/v0.0.2) | ✅ **PASS** · arm64 패키지 실행 | — Linux 배포 없음 | ✅ [CI](https://github.com/ingjae/haru/actions/runs/38379026435) |
@@ -79,4 +80,4 @@ OAuth와 일정·할일은 이 기기에서 Google과 직접 통신합니다. �
 
 v0.0.4: 상단 **캘린더**에서 표시할 캘린더·할일 목록을 여러 개 선택할 수 있습니다. 기존 항목은 원래 그룹에 수정되며 완료한 할일은 체크된 네모·취소선으로 표시됩니다.
 
-최신 릴리즈는 **v0.0.4**입니다. 주·월 보기, 그룹 색상과 정리한 설정 UI를 포함합니다. [릴리즈 변경 사항과 검증 상태](docs/releases/v0.0.4.md)
+최신 릴리즈는 **v0.0.5**입니다. 축소 레일 위쪽의 빈 공간을 수정했습니다. [릴리즈 변경 사항과 검증 상태](docs/releases/v0.0.5.md)

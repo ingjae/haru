@@ -4,7 +4,7 @@
 
 ## macOS · Apple Silicon
 
-1. `Haru-0.0.4-arm64.dmg`와 `SHA256SUMS.txt`를 같은 폴더에 내려받습니다.
+1. `Haru-0.0.5-arm64.dmg`와 `SHA256SUMS.txt`를 같은 폴더에 내려받습니다.
 2. 터미널에서 다운로드 폴더로 이동해 무결성을 확인합니다.
 
    ```sh
@@ -18,7 +18,7 @@
 
 ## Ubuntu 24.04 · x86_64
 
-`Haru-0.0.4-x86_64.AppImage`와 `SHA256SUMS-linux.txt`를 받습니다. FUSE·한글 글꼴·GNOME Keyring 및 sandbox 설정은 [Linux 설치 안내](LINUX.md)를 따르세요.
+`Haru-0.0.5-x86_64.AppImage`와 `SHA256SUMS-linux.txt`를 받습니다. FUSE·한글 글꼴·GNOME Keyring 및 sandbox 설정은 [Linux 설치 안내](LINUX.md)를 따르세요.
 
 macOS 메뉴바 타임라인과 다른 앱의 창 배치 보정은 Linux에서 지원하지 않습니다. 실제 GNOME/Wayland의 화면 배치와 Google OAuth는 별도 검증이 필요합니다.
 
