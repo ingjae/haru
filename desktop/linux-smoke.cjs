@@ -15,7 +15,12 @@ async function run(win){
     document.querySelector('.task-row input').click();await wait(()=>document.querySelector('.task-row.completed'),'complete task');
     document.getElementById('settings-open').click();
     await wait(()=>document.getElementById('app-version').textContent==='v'+${JSON.stringify(require('../package.json').version)},'settings version');
-    return {version:document.getElementById('app-version').textContent,events:document.getElementById('count').textContent,completedToday:document.querySelectorAll('.task-row.completed').length};
+    await wait(()=>document.getElementById('settings').open,'settings visible');
+    document.getElementById('settings').close();await window.desktop.editing(false);await window.desktop.expand(false);
+    await wait(()=>document.body.classList.contains('widget-collapsed'),'compact rail');
+    if(getComputedStyle(document.querySelector('.overview')).display!=='none'||document.getElementById('timeline').getBoundingClientRect().top>16)throw Error('Compact rail has a background gap');
+    await window.desktop.expand(true);await wait(()=>!document.body.classList.contains('widget-collapsed'),'expand after compact check');
+    return {compactNoGap:true,version:document.getElementById('app-version').textContent,events:document.getElementById('count').textContent,completedToday:document.querySelectorAll('.task-row.completed').length};
   })()`);
   console.info('LINUX_SMOKE_OK',JSON.stringify(result));
   if(process.env.HARU_SMOKE_SCREENSHOT)await fs.writeFile(process.env.HARU_SMOKE_SCREENSHOT,(await win.webContents.capturePage()).toPNG());

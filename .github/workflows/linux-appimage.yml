@@ -5,7 +5,7 @@ on:
       release_tag:
         description: Existing release to receive the Ubuntu 24.04 x86_64 AppImage
         required: true
-        default: v0.0.4
+        default: v0.0.5
       upload_release:
         description: Upload to an existing release (leave false to prepare artifacts only)
         type: boolean
