@@ -300,3 +300,7 @@ v0.0.4 최종 코드 fe61052: 자동 테스트 57개、Mac/Linux CI 38558357427 
 ## 축소 레일 위쪽 빈 공간 수정 — main
 
 v0.0.4 디자인 정리의 .desktop-app .overview display:flex가 기존 축소 숨김 규칙과 동일한 specificity로 뒤에서 덮어써 요약 글자가 24px 레일 위에 남고 타임라인 위쪽에 약 100px 공백을 만들었다. .desktop-app.widget-collapsed .overview display:none을 적용. 현재 Mac 실제 Google 연결 앱 재실행 후 AX에서 요약 제거, 화면에서 레일이 위쪽부터 이어지는 것을 확인했다. Google 데이터나 배경 옵션 변경 없음. 기존 공개 v0.0.4 설치 파일은 교체하지 않았다.
+
+## v0.0.5 공개 — 2026-10-15
+
+축소 레일 공백 수정 5398f5b를 포함하여 v0.0.5 게시 완료. 제품 빌드 소스 284badb, 태그 대상 e2b5157(이후 차이는 문서). 테스트 57개, CI 38681266783, Ubuntu AppImage 38681266405 통과. Linux packaged smoke compactNoGap=true 회귀 검증 추가. Mac DMG hdiutil verify 및 실제 패키지 v0.0.5 실행·설정 버전 확인. 네 개 자산 uploaded, latest=v0.0.5, draft/prerelease=false, GitHub 설치 파일 digest와 로컬 체크섬 일치 확인. 현재 Mac에서 v0.0.5 패키지가 기존 Google 연결로 실행 중. 이전 공개 파일은 그대로 유지.
