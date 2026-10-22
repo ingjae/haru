@@ -81,3 +81,5 @@ OAuth와 일정·할일은 이 기기에서 Google과 직접 통신합니다. �
 v0.0.4: 상단 **캘린더**에서 표시할 캘린더·할일 목록을 여러 개 선택할 수 있습니다. 기존 항목은 원래 그룹에 수정되며 완료한 할일은 체크된 네모·취소선으로 표시됩니다.
 
 최신 릴리즈는 **v0.0.5**입니다. 축소 레일 위쪽의 빈 공간을 수정했습니다. [릴리즈 변경 사항과 검증 상태](docs/releases/v0.0.5.md)
+
+제품 안내: [Haru 홈페이지](https://ingjae.github.io/haru/) · [개인정보처리방침](https://ingjae.github.io/haru/privacy.html) · [이용 안내](https://ingjae.github.io/haru/terms.html)

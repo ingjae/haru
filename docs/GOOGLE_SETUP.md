@@ -42,4 +42,10 @@ Haru는 현재 사용자가 준비한 데스크톱 OAuth 클라이언트로 Goog
 
 main 개발 버전은 인증 만료 오류 아래 또는 **설정 → 캘린더 → Google 다시 로그인**에서 재연결할 수 있습니다. 기존 OAuth 클라이언트 정보와 기존 Calendar/Tasks 권한을 재사용하므로 JSON을 다시 고를 필요가 없습니다. 기존 연결을 해제하기 전에 재로그인을 먼저 시도하세요.
 
-Google 앱이 외부 사용자용 **Testing** 상태이면 Calendar/Tasks 권한을 가진 갱신 토큰은 7일 뒤 만료될 수 있습니다. 이는 재로그인으로 복구해도 반복될 수 있으며, Google Cloud의 배포 상태를 별도로 검토해야 합니다. 현재 상태를 자동으로 Production으로 변경하지 않습니다. [Google 공식 문서](https://developers.google.com/identity/protocols/oauth2/#expiration)
+Google 앱이 외부 사용자용 **Testing** 상태이면 Calendar/Tasks 권한을 가진 갱신 토큰은 7일 뒤 만료될 수 있습니다. 이는 재로그인으로 복구해도 반복될 수 있으며, Google Cloud의 배포 상태를 별도로 검토해야 합니다. 프로젝트 배포 상태 변경은 사용자 승인 후 진행합니다. [Google 공식 문서](https://developers.google.com/identity/protocols/oauth2/#expiration)
+
+## 프로덕션 전환 완료 (2026-10-22)
+
+Haru 홈페이지·개인정보처리방침·약관은 https://ingjae.github.io/haru/ 에 배포했습니다. Google Search Console에서 동일 계정으로 URL 접두어 속성의 HTML 태그 소유권 확인을 완료했으며, 확인 태그는 홈페이지에서 유지해야 합니다. Google OAuth 브랜딩에 홈페이지·privacy.html·terms.html 및 승인된 도메인 ingjae.github.io를 저장했습니다. 앱 이름·지원 이메일·OAuth 클라이언트 및 요청 권한은 유지했습니다.
+
+사용자 승인 후 watt 프로젝트의 watt-app을 Production으로 전환했고 Cloud 화면의 프로덕션 단계를 확인했습니다. 전환 후 기존 Calendar/Tasks 범위로 재로그인하여 실제 일정 3개와 할일 조회를 확인했습니다. Google 앱 검증 심사 완료와는 별개이므로 미검증 앱 경고와 100명 사용자 한도는 남아 있습니다. Testing의 7일 제한이 없어져도 접근 취소·장기 미사용·계정 보안 정책 등 다른 사유로 갱신 토큰이 만료될 수 있으므로 무기한 인증을 보장하지 않습니다. 7일이 지난 뒤의 장기 유지 여부는 아직 실측하지 않았습니다.
