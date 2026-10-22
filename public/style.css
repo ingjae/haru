@@ -48,3 +48,5 @@ html:has(body.widget-collapsed),body.widget-collapsed{background:transparent}.de
 
 /* Compact rails contain only the timeline; expanded overview rules must not reserve space. */
 .desktop-app.widget-collapsed .overview{display:none}
+
+#reauth{align-self:flex-start;margin:8px 0;font-size:12px}.widget-collapsed #reauth{display:none!important}

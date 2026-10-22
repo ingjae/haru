@@ -8,7 +8,7 @@ let calendarView='day',defaultGroups;
 let widget={edge:false,expanded:false},toastTimer;
 function applyWidget(state){const reset=calendarView!=='day'&&state.calendarView==='day';widget=state;if(reset){calendarView='day';events=todayEvents;dateLabel();queueMicrotask(refresh);}$('notify').checked=!!state.notifications;$('reminder-bubble').checked=state.reminderBubble!==false;$('reminder-animation').value=state.reminderAnimation||'pop';$('reminder-animation').disabled=$('reminder-preview').disabled=state.reminderBubble===false;if(state.edge&&!state.expanded&&dateInput(viewDate)!==dateInput()){viewDate=new Date();events=todayEvents;dateLabel();refresh();}$('timeline-start').value=String(state.timelineStart??540);$('timeline-end').value=String(state.timelineEnd??1260);$('rail-collapse').hidden=(!state.edge||!state.expanded)&&!state.menuBar;$('menubar-width').value=String(state.menuBarWidth??180);$('menubar-width').closest('label').hidden=state.platform==='linux'||!['menubar','statusbar'].includes(state.side);document.querySelectorAll('[data-position]').forEach(b=>b.hidden=state.platform==='linux'&&['menubar','statusbar'].includes(b.dataset.position));const reserveButton=$('reserve-space-button');if(reserveButton)reserveButton.hidden=state.platform==='linux';document.body.classList.toggle('collapsed-titles',!!state.collapsedTitles);$('collapsed-titles').checked=!!state.collapsedTitles;$('rail-background').checked=state.railBackground!==false;document.body.classList.toggle('rail-background-off',state.railBackground===false);document.body.classList.toggle('widget-right',state.side==='right');document.body.classList.toggle('edge-widget',!!state.edge);document.body.classList.toggle('widget-collapsed',!!state.edge&&!state.expanded);render();}
 const time = value => new Date(value).toLocaleTimeString('ko-KR', {hour:'2-digit',minute:'2-digit',hour12:false});
-function message(text) { $('message').textContent = text; $('settings-message').textContent=text; }
+function message(text) { const clean=String(text||'').replace(/^Error invoking remote method '[^']+': Error: /,'');$('message').textContent=clean;$('settings-message').textContent=clean;$('reauth').hidden=!connected||!(/인증이 만료|인증에 실패|다시 로그인|다시 연결/.test(clean)); }
 function samples() {
   const day = new Date();
   const at = (h,m=0) => { const d = new Date(day); d.setHours(h,m,0,0); return d.toISOString(); };
@@ -111,7 +111,7 @@ function render() {
   document.querySelector('.section-heading h2').firstChild.textContent=dateInput(viewDate)===dateInput()?'오늘의 타임라인 ':'하루의 타임라인 ';
   $('account-status').textContent=connected?'Google 캘린더 연결됨':'샘플 일정을 보고 있어요';
   $('settings-account').textContent=$('account-status').textContent;
-  $('connect').hidden=connected;$('disconnect').hidden=!connected;
+  $('connect').hidden=connected;$('reconnect').hidden=!connected;$('disconnect').hidden=!connected;
   const pointer=$('timeline').querySelector('.now');
   bridge?.timePointer(widget.edge&&!widget.expanded&&pointer?pointer.getBoundingClientRect().top+1.5:null);
   renderMenuBar();
@@ -143,7 +143,7 @@ async function refresh(){
   }catch(error){events=[];todayEvents=[];render();message(error.message);return false;}
   finally{loading=false;$('refresh').disabled=false;}
 }
-function googleSetup(){if($('settings').open)$('settings').close();if(!bridge){message('Google 연결은 macOS 데스크톱 앱에서 지원합니다.');return;}bridge.editing(true);$('google-progress').textContent='';if(!$('google-setup').open)$('google-setup').showModal();}
+function googleSetup(){if($('settings').open)$('settings').close();if(!bridge){message('Google 연결은 macOS 데스크톱 앱에서 지원합니다.');return;}bridge.editing(true);$('google-login').textContent=connected?'Google 다시 로그인':'JSON 선택하고 로그인';$('google-setup').querySelectorAll('.setup-copy').forEach(element=>element.hidden=connected);$('google-console').hidden=connected;$('google-progress').textContent=connected?'기존 연결 정보와 권한을 사용해 다시 로그인합니다.':'';if(!$('google-setup').open)$('google-setup').showModal();}
 for(let minute=0;minute<=1440;minute+=30){for(const id of ['timeline-start','timeline-end']){if(id==='timeline-start'&&minute===1440)continue;const option=document.createElement('option');option.value=String(minute);option.textContent=timelineTime(minute);$(id).append(option);}}
 $('timeline-start').value='540';$('timeline-end').value='1260';
 async function changeTimeline(start,end){try{timelineRange(start,end);if(bridge)await bridge.timelineRange(start,end);else applyWidget({...widget,timelineStart:start,timelineEnd:end});message('타임라인 시간을 저장했습니다.');}catch(error){message(error.message);}}
@@ -160,14 +160,14 @@ const settingsSections=[...$('settings').querySelectorAll('.settings-section')];
 $('settings-open').onclick=()=>{bridge?.editing(true);$('settings').showModal();};
 $('settings-close').onclick=()=>$('settings').close();
 $('settings').addEventListener('close',()=>bridge?.editing(false));
-$('connect').onclick=googleSetup;
+$('connect').onclick=googleSetup;$('reconnect').onclick=googleSetup;$('reauth').onclick=googleSetup;
 $('connect-extended').onclick=async()=>{bridge?.editing(true);$('connect-extended').disabled=true;try{if(!bridge)throw Error('Google 연결은 macOS 앱에서 지원합니다.');await bridge.connectExtended();connected=true;extended=!!(await bridge.status()).extended;if(!extended)throw Error('캘린더 목록과 Google 할일 권한을 모두 선택해 주세요.');await loadLists();const loaded=await refresh();if(loaded&&!taskError)message('추가 권한을 연결했습니다.');}catch(error){message(error.message);}finally{$('connect-extended').disabled=false;bridge?.editing(false);}};
 bridge?.onGoogleSetup(googleSetup);
 $('google-close').onclick=()=>$('google-setup').close();
 $('google-setup').addEventListener('close',()=>bridge?.editing(false));
 $('google-setup').addEventListener('cancel',event=>{if($('google-login').disabled)event.preventDefault();});
 $('google-console').onclick=()=>bridge?.openMeeting('https://console.cloud.google.com/apis/credentials');
-$('google-login').onclick=async()=>{ $('google-login').disabled=true;$('google-close').disabled=true;$('google-progress').textContent='OAuth JSON을 선택하고 브라우저에서 로그인을 완료해 주세요.';try{await bridge.connect();connected=true;const status=await bridge.status();extended=status.extended;await loadLists();const loaded=await refresh();if(loaded)$('google-setup').close();else $('google-progress').textContent='Google 로그인은 완료됐지만 일정 조회가 실패했습니다. '+$('message').textContent;}catch(error){$('google-progress').textContent=error.message;}finally{$('google-login').disabled=false;$('google-close').disabled=false;}};
+$('google-login').onclick=async()=>{ $('google-login').disabled=true;$('google-close').disabled=true;$('google-progress').textContent=connected?'브라우저에서 Google 로그인을 완료해 주세요.':'OAuth JSON을 선택하고 브라우저에서 로그인을 완료해 주세요.';try{await bridge.connect();connected=true;const status=await bridge.status();extended=status.extended;await loadLists();const loaded=await refresh();if(loaded)$('google-setup').close();else $('google-progress').textContent='Google 로그인은 완료됐지만 일정 조회가 실패했습니다. '+$('message').textContent;}catch(error){$('google-progress').textContent=error.message;}finally{$('google-login').disabled=false;$('google-close').disabled=false;}};
 
 $('disconnect').onclick=async()=>{await bridge.disconnect();connected=false;extended=false;taskError='';tasks=[];calendars=[{id:'primary',summary:'기본 캘린더',accessRole:'owner'}];taskLists=[{id:'@default',title:'내 할일'}];calendarId='primary';taskListId='@default';listOptions();events=samples();sampleEvents=events;todayEvents=events;render();message('이 기기의 연결 정보를 삭제했습니다.');};
 $('refresh').onclick=refresh;

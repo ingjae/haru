@@ -37,3 +37,9 @@ Haru는 현재 사용자가 준비한 데스크톱 OAuth 클라이언트로 Goog
 앱의 연결 해제는 이 기기의 저장 인증을 삭제합니다. Google 쪽 접근 권한은 [Google 계정 연결 관리](https://myaccount.google.com/connections)에서 별도로 취소할 수 있습니다.
 
 참고: [Google Desktop OAuth](https://developers.google.com/identity/protocols/oauth2/native-app), [Calendar API 빠른 시작](https://developers.google.com/workspace/calendar/api/quickstart/python).
+
+## 인증 만료·취소 후 재로그인
+
+main 개발 버전은 인증 만료 오류 아래 또는 **설정 → 캘린더 → Google 다시 로그인**에서 재연결할 수 있습니다. 기존 OAuth 클라이언트 정보와 기존 Calendar/Tasks 권한을 재사용하므로 JSON을 다시 고를 필요가 없습니다. 기존 연결을 해제하기 전에 재로그인을 먼저 시도하세요.
+
+Google 앱이 외부 사용자용 **Testing** 상태이면 Calendar/Tasks 권한을 가진 갱신 토큰은 7일 뒤 만료될 수 있습니다. 이는 재로그인으로 복구해도 반복될 수 있으며, Google Cloud의 배포 상태를 별도로 검토해야 합니다. 현재 상태를 자동으로 Production으로 변경하지 않습니다. [Google 공식 문서](https://developers.google.com/identity/protocols/oauth2/#expiration)

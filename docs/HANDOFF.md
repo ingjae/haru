@@ -304,3 +304,9 @@ v0.0.4 디자인 정리의 .desktop-app .overview display:flex가 기존 축소 
 ## v0.0.5 공개 — 2026-10-15
 
 축소 레일 공백 수정 5398f5b를 포함하여 v0.0.5 게시 완료. 제품 빌드 소스 284badb, 태그 대상 e2b5157(이후 차이는 문서). 테스트 57개, CI 38681266783, Ubuntu AppImage 38681266405 통과. Linux packaged smoke compactNoGap=true 회귀 검증 추가. Mac DMG hdiutil verify 및 실제 패키지 v0.0.5 실행·설정 버전 확인. 네 개 자산 uploaded, latest=v0.0.5, draft/prerelease=false, GitHub 설치 파일 digest와 로컬 체크섬 일치 확인. 현재 Mac에서 v0.0.5 패키지가 기존 Google 연결로 실행 중. 이전 공개 파일은 그대로 유지.
+
+## 2026-10-22 Google 재인증 복구
+
+invalid_grant 메시지로 일정 조회 불가. 현재 Google 로그인 화면에서 앱이 Testing 상태인 것을 확인했고, 공식 문서의 7일 갱신 토큰 만료 조건과 일치할 가능성이 높음(개별 만료 원인 확정은 아님). 기존 클라이언트/Calendar·Tasks 범위를 재사용한 로그인 후 실제 일정 3개와 할일 조회 복구, 앱 재실행 후에도 실제 일정 조회·레일 표시 확인. 인증 파일·토큰 출력/삭제 없음. Cloud 배포 상태 변경 없음.
+
+main에 오류 아래 및 설정의 Google 다시 로그인 버튼, 재연결 시 JSON 설명 숨김/기존 정보 재사용 안내, IPC 오류 접두사 제거 추가. UI 적용 도중 잘못 덮어쓴 스타일은 원래 CSS로 복구하고 변경 두 줄만 유지, 실제 화면 확인. 기존 테스트 57개 통과. 공개 v0.0.5 파일은 변경하지 않음.
