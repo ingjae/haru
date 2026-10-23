@@ -1,6 +1,6 @@
 {
   "name": "today-scheduler",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "private": true,
   "type": "module",
   "main": "desktop/main.cjs",
@@ -19,7 +19,7 @@
     "package:linux": "electron-builder --linux AppImage --x64"
   },
   "devDependencies": {
-    "electron": "^39.0.0",
+    "electron": "^45.0.0",
     "electron-builder": "^26.0.12"
   },
   "build": {

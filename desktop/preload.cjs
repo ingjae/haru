@@ -1,6 +1,6 @@
 const {contextBridge,ipcRenderer}=require('electron');
 contextBridge.exposeInMainWorld('desktop',{
-  onGoogleSetup:callback=>ipcRenderer.on('google-setup',callback),
+  onGoogleSetup:callback=>ipcRenderer.on('google-setup',()=>callback()),
   onLayout:callback=>ipcRenderer.on('layout-status',(_event,state)=>callback(state)),
   reserveSpace:value=>ipcRenderer.invoke('reserve-space',value),
   onWidget:callback=>ipcRenderer.on('widget-state',(_event,state)=>callback(state)),
