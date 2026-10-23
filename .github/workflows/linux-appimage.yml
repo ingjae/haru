@@ -42,7 +42,7 @@ jobs:
           dist/Haru-*-x86_64.AppImage --appimage-extract > /dev/null
           sudo chown root:root squashfs-root/chrome-sandbox
           sudo chmod 4755 squashfs-root/chrome-sandbox
-          HARU_SMOKE_SCREENSHOT="$PWD/dist/linux-smoke.png" dbus-run-session -- xvfb-run -a timeout 60 squashfs-root/haru --demo --smoke-test
+          HARU_SMOKE_SCREENSHOT="$PWD/dist/linux-smoke.png" dbus-run-session -- xvfb-run -a timeout 60 squashfs-root/haru --disable-gpu --demo --smoke-test
       - name: Checksum
         run: |
           cd dist
