@@ -173,3 +173,8 @@ main에 오류 아래 및 설정의 Google 다시 로그인 버튼, 재연결 �
 ## 2026-10-22 Google Production 전환
 
 사용자 승인 후 watt-439702의 watt-app을 Testing에서 Production으로 전환. Google Cloud 대상 화면의 프로덕션 단계 확인. 홈페이지 https://ingjae.github.io/haru/ 및 개인정보처리방침·약관을 GitHub Pages로 배포, Search Console HTML 태그 소유권 확인 후 OAuth 브랜딩에 등록. 공개 소유권 확인 태그는 유지해야 함. 앱 이름·클라이언트·기존 Calendar/Tasks 권한 종류 유지. 전환 후 동일 계정 재로그인, 실제 일정 3개와 할일 조회, 소스 앱 재실행 후 일정 조회 유지 확인. 현재 실행은 npm start 개발 버전. Testing 7일 제한 해제와 Google 검증 심사는 별개이며 미검증 앱 경고·100명 한도는 남음. 7일 경과 장기 유지 실측은 아직 없음. 접근 취소·장기 미사용·계정 정책에 의한 재인증 가능. 인증값은 저장소에 추가하지 않음. 공개 v0.0.5 자산 변경 없음.
+
+
+## v0.0.6 공개 — 2026-10-23
+
+재로그인 개선·개인정보처리방침 링크·Electron 45.0.0 보안 업데이트·google-setup IPC 이벤트 객체 전달 방지 포함. 제품 소스 1887324, 태그도 1887324. npm audit 전체 공개 취약점 0건, 테스트 57개 및 Mac/Linux CI 39884376864 통과. 현재 MacBook에서 새 패키지 실행·설정 v0.0.6·기존 Google 할일 조회·JSON 없는 재로그인 안내 확인. 현재 v0.0.6 패키지 실행 중. DMG verify 통과. Ubuntu workflow f479611/d25fd7d는 중복 폰트 다운로드 제거·APT 타임아웃·Xvfb에서만 GPU 비활성화(Chromium sandbox 유지). Linux 39885359303 및 최종 직접 업로드 39885657543 빌드·smoke 통과, compactNoGap=true. 아티팩트 로컬 전체 다운로드는 연결 끊김으로 실패하여 러너에서 직접 업로드. Linux 전체 파일 로컬 재해시는 미수행, 러너 SHA256SUMS와 GitHub digest 일치 확인. Mac digest 3a6a2128186e0d647035f04e00fc567a994f2bd81862903dde5089fa7c597cd7, Linux digest 95d36f8326af086600a4bea890e2fe48bcf911bac87ab09a8a75c06eb3518f89. 릴리즈 4개 자산 uploaded, draft/prerelease=false, latest=v0.0.6 확인. Mac 서명·공증/Google 검증심사/Linux 실기기/실제 CRUD·알림 전체 검증은 미완료. 이전 릴리즈 파일 변경 없음.
